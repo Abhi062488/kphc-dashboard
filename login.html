@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPHC Dashboard — Login</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #030810;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; }
+
+.container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.login-card {
+  background: linear-gradient(160deg, rgba(4,18,38,.95) 0%, rgba(2,12,28,.98) 100%);
+  border: 1px solid rgba(0,212,255,.3);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  padding: 48px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 0 50px rgba(0,212,255,.1);
+}
+
+.card-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: rgba(255,255,255,.95);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: rgba(0,212,255,.7);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0,212,255,.85);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(5,15,30,.8);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 6px;
+  color: rgba(255,255,255,.9);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: rgba(0,212,255,.6);
+  box-shadow: 0 0 20px rgba(0,212,255,.1);
+  background: rgba(5,15,30,.95);
+}
+
+.form-input::placeholder {
+  color: rgba(255,255,255,.4);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(0,212,255,.3), rgba(0,150,255,.2));
+  border: 1px solid rgba(0,212,255,.4);
+  border-radius: 6px;
+  color: rgba(0,212,255,.95);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(0,212,255,.5), rgba(0,150,255,.3));
+  border-color: rgba(0,212,255,.7);
+  box-shadow: 0 0 30px rgba(0,212,255,.2);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  background: rgba(255,60,60,.1);
+  border: 1px solid rgba(255,60,60,.3);
+  color: rgba(255,120,120,.95);
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-bottom: 20px;
+  display: none;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.error-msg.show {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+  letter-spacing: 1px;
+}
+</style>
+
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="container">
+  <div class="login-card">
+    <div class="card-header">
+      <div class="card-title">KPHC Dashboard</div>
+      <div class="card-subtitle">Sixapart Healthcare RCM Platform</div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          class="form-input" 
+          placeholder="Enter your username"
+          required
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          class="form-input" 
+          placeholder="Enter your password"
+          required
+          autocomplete="off"
+        >
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+    </form>
+  </div>
+</div>
+
+<div class="footer">
+  KPHC RCM Platform v1.0 | Secured
+</div>
+
+<script>
+// Animated background canvas
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+for (let i = 0; i < 50; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: (Math.random() - 0.5) * 0.5,
+    size: Math.random() * 2 + 0.5,
+    opacity: Math.random() * 0.5 + 0.2
+  });
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    
+    ctx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`;
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+  });
+  
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// Handle login
+async function handleLogin(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const submitBtn = document.getElementById('submitBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  
+  // Clear error
+  errorMsg.classList.remove('show');
+  
+  // Disable button
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Authenticating...';
+  
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      // Redirect to dashboard
+      window.location.href = data.redirect || '/';
+    } else {
+      // Show error
+      errorMsg.textContent = data.error || 'Login failed';
+      errorMsg.classList.add('show');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Login';
+    }
+  } catch (error) {
+    errorMsg.textContent = 'Connection error. Please try again.';
+    errorMsg.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Login';
+  }
+}
+</script>
+</body>
+</html>
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:18px 32px;background:linear-gradient(180deg,rgba(3,8,16,.85) 0%,rgba(3,8,16,0) 100%);pointer-events:none}
+.tb-logo{display:flex;align-items:center;gap:12px}
+.tb-icon{width:36px;height:36px;border:1.5px solid rgba(0,212,255,.45);border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,.06);position:relative}
+.tb-icon::after{content:'S';font-family:'Outfit';font-weight:800;font-size:18px;color:rgba(0,212,255,.9)}
+.tb-text{display:flex;flex-direction:column}
+.tb-name{font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.tb-sub{font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:rgba(0,212,255,.65);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:20px}
+.tb-status{display:flex;align-items:center;gap:7px}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:#00e68a;box-shadow:0 0 8px rgba(0,230,138,.4);animation:dotPulse 2.5s ease infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.tb-status-text{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;color:rgba(0,230,138,.75)}
+.tb-clock{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.45)}
+
+/* (branding integrated into login card) */
+
+/* ============================================================
+   LOGIN PANEL — Alive glass card with gradient + shimmer
+   ============================================================ */
+.login-panel{position:fixed;z-index:20;left:50%;bottom:50px;transform:translateX(-50%);width:440px;pointer-events:auto}
+.lp-card{background:linear-gradient(160deg,rgba(4,18,38,.92) 0%,rgba(2,12,28,.95) 40%,rgba(6,20,42,.9) 100%);border:1px solid rgba(0,212,255,.2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);padding:20px 28px 12px;position:relative;overflow:hidden}
+.lp-card::before,.lp-card::after{content:'';position:absolute;width:16px;height:16px}
+.lp-card::before{top:-1px;left:-1px;border-top:2px solid rgba(0,212,255,.6);border-left:2px solid rgba(0,212,255,.6)}
+.lp-card::after{top:-1px;right:-1px;border-top:2px solid rgba(0,212,255,.6);border-right:2px solid rgba(0,212,255,.6)}
+.lp-corner-bl,.lp-corner-br{position:absolute;width:16px;height:16px;bottom:-1px;z-index:2}
+.lp-corner-bl{left:-1px;border-bottom:2px solid rgba(0,212,255,.6);border-left:2px solid rgba(0,212,255,.6)}
+.lp-corner-br{right:-1px;border-bottom:2px solid rgba(0,212,255,.6);border-right:2px solid rgba(0,212,255,.6)}
+
+/* Animated shimmer sweep across card */
+.lp-shimmer{position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(105deg,transparent 40%,rgba(0,212,255,.03) 45%,rgba(0,212,255,.06) 50%,rgba(0,212,255,.03) 55%,transparent 60%);animation:cardShimmer 6s ease-in-out infinite;pointer-events:none;z-index:0}
+@keyframes cardShimmer{0%,100%{left:-100%}50%{left:100%}}
+
+/* Top edge glow line */
+.lp-topglow{position:absolute;top:0;left:10%;width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.25),rgba(120,80,255,.15),rgba(0,212,255,.25),transparent);z-index:1}
+
+/* Inner gradient overlay for depth */
+.lp-depth{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(0,180,255,.02) 0%,transparent 100%);pointer-events:none;z-index:0}
+
+.lp-header{text-align:center;margin-bottom:10px;position:relative;z-index:1}
+.lp-lock{width:32px;height:32px;margin:0 auto 6px;border:1.5px solid rgba(0,212,255,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(0,212,255,.06) 0%,transparent 70%)}
+.lp-lock::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,212,255,.08);animation:lockPulse 3s ease infinite}
+@keyframes lockPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0}}
+.lp-lock svg{width:18px;height:18px}
+.lp-title{font-size:14px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.88)}
+.lp-subtitle{font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:rgba(0,212,255,.5);margin-top:4px}
+
+/* Separator line below header */
+.lp-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.12),transparent);margin-bottom:10px}
+
+/* Input group */
+.input-group{margin-bottom:0;position:relative;z-index:1}
+.ig-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ig-label{font-family:'JetBrains Mono';font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(0,212,255,.8);transition:opacity .3s}
+.ig-leds{display:flex;gap:5px}
+.ig-led{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.08);transition:all .4s}
+.ig-led.on{background:rgba(0,212,255,.7);box-shadow:0 0 8px rgba(0,212,255,.4)}
+.ig-led.green{background:#00e68a;box-shadow:0 0 8px rgba(0,230,138,.3)}
+.ig-field{position:relative}
+.ig-input{width:100%;background:rgba(0,12,24,.5);border:1px solid rgba(0,212,255,.18);color:#e8f0f8;font-family:'Outfit';font-size:20px;font-weight:400;letter-spacing:2px;padding:12px 16px;outline:none;transition:all .3s;caret-color:rgba(0,212,255,.8)}
+.ig-input:focus{border-color:rgba(0,212,255,.45);background:rgba(0,16,32,.65);box-shadow:0 0 25px rgba(0,212,255,.05),inset 0 0 20px rgba(0,212,255,.02)}
+.ig-input::placeholder{color:rgba(255,255,255,.3);font-size:14px;letter-spacing:1px;font-weight:300}
+.ig-input[type="password"]{font-family:'JetBrains Mono';font-size:24px;letter-spacing:10px}
+.ig-bar{height:3px;background:rgba(255,255,255,.03);margin-top:-1px;overflow:hidden}
+.ig-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#0891b2,#06b6d4,#7c3aed);transition:width .3s;position:relative}
+
+/* Submit */
+.lp-submit{width:100%;background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(120,80,255,.04),rgba(0,212,255,.06));color:rgba(0,212,255,.85);font-family:'Outfit';font-size:12px;font-weight:500;letter-spacing:5px;text-transform:uppercase;cursor:pointer;transition:all .5s;margin:0;opacity:0;pointer-events:none;position:relative;z-index:1;max-height:0;padding:0;overflow:hidden;border:none}
+.lp-submit.show{opacity:1;pointer-events:auto;max-height:50px;padding:14px;margin-top:6px;border:1px solid rgba(0,212,255,.2);overflow:visible}
+.lp-submit:hover{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(120,80,255,.08),rgba(0,212,255,.12));border-color:rgba(0,212,255,.4);color:rgba(0,212,255,1);letter-spacing:6px;box-shadow:0 0 30px rgba(0,212,255,.06)}
+
+.lp-hint{font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.2);text-align:center;margin-top:6px;transition:color .5s;position:relative;z-index:1}
+.lp-hint.vis{color:rgba(255,255,255,.4)}
+
+/* ============================================================
+   SIDE BADGES — HIPAA / Compliance / Security
+   ============================================================ */
+.side-left{position:fixed;left:28px;bottom:50%;transform:translateY(50%);z-index:10;display:flex;flex-direction:column;gap:12px;width:220px;pointer-events:none;opacity:0;animation:fadeSlide 1.5s ease 1s forwards}
+.side-right{position:fixed;right:28px;bottom:50%;transform:translateY(50%);z-index:10;display:flex;flex-direction:column;gap:12px;width:240px;pointer-events:none;opacity:0;animation:fadeSlide 1.5s ease 1.3s forwards}
+@keyframes fadeSlide{to{opacity:1}}
+
+.badge{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(5,15,30,.7);border:1px solid rgba(0,212,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.badge-icon{flex-shrink:0}
+.badge-icon svg{width:20px;height:24px}
+.badge-text{display:flex;flex-direction:column;gap:2px}
+.badge-t1{font-family:'Outfit';font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,.9)}
+.badge-t2{font-family:'JetBrains Mono';font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.55)}
+
+.info-card{padding:12px 16px;background:rgba(5,15,30,.65);border:1px solid rgba(0,212,255,.12);width:100%;transition:border-color .3s}
+.info-card:hover{border-color:rgba(0,212,255,.25)}
+.ic-label{font-family:'JetBrains Mono';font-size:9px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(0,212,255,.85);margin-bottom:6px}
+.ic-value{font-family:'Outfit';font-size:13px;font-weight:500;color:rgba(255,255,255,.85);letter-spacing:1px}
+.ic-row{display:flex;align-items:center;gap:7px;margin-top:5px}
+.ic-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ic-dot.g{background:#00e68a;box-shadow:0 0 6px rgba(0,230,138,.4)}
+.ic-dot.c{background:rgba(0,212,255,.7);box-shadow:0 0 6px rgba(0,212,255,.3)}
+.ic-dot.a{background:rgba(255,180,40,.7)}
+.ic-text{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.6)}
+
+/* ============================================================
+   BOTTOM BAR — PHI Warning + Legal
+   ============================================================ */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:10px 32px;background:linear-gradient(0deg,rgba(3,8,16,.85) 0%,rgba(3,8,16,0) 100%);pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end}
+.phi-notice{display:flex;flex-direction:column;gap:3px}
+.phi-line{font-family:'JetBrains Mono';font-size:9px;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+.phi-warn{color:rgba(255,180,40,.75)}
+.phi-warn svg{width:12px;height:12px;flex-shrink:0}
+.phi-legal{color:rgba(255,255,255,.35)}
+.phi-copy{font-family:'JetBrains Mono';font-size:8px;letter-spacing:1px;color:rgba(255,255,255,.25);margin-top:2px}
+.bb-right-col{text-align:right;display:flex;flex-direction:column;gap:2px}
+.bb-ver{font-family:'JetBrains Mono';font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.3)}
+.bb-session{font-family:'JetBrains Mono';font-size:8px;letter-spacing:1px;color:rgba(0,212,255,.35)}
+
+/* ============================================================
+   AMBIENT FX
+   ============================================================ */
+.scan-line{position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.06),transparent);z-index:30;pointer-events:none;animation:scanDrift 7s linear infinite}
+@keyframes scanDrift{0%{top:-1px}100%{top:100%}}
+
+/* ============================================================
+   DRIBBLE CHARS
+   ============================================================ */
+.dribble-char{position:fixed;z-index:25;font-family:'Outfit';font-weight:400;pointer-events:none;color:rgba(0,212,255,.7);text-shadow:0 0 12px rgba(0,212,255,.3)}
+
+/* ============================================================
+   LOGIN CARD BREATHING BORDER
+   ============================================================ */
+@keyframes borderBreathe{0%,100%{border-color:rgba(0,212,255,.2);box-shadow:0 0 20px rgba(0,212,255,.02)}50%{border-color:rgba(0,212,255,.35);box-shadow:0 0 40px rgba(0,212,255,.04)}}
+.lp-card{animation:borderBreathe 4s ease-in-out infinite}
+
+/* Error state */
+@keyframes cardShake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
+.lp-card.error{animation:cardShake .5s ease !important;border-color:rgba(255,60,60,.5) !important;box-shadow:0 0 40px rgba(255,60,60,.08) !important}
+.lp-error{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;color:rgba(255,80,80,.8);text-align:center;position:relative;z-index:1;transition:all .3s;opacity:0;max-height:0;margin:0;overflow:hidden}
+.lp-error.show{opacity:1;max-height:30px;margin-top:4px}
+
+/* ============================================================
+   FIELD MORPH TRANSITION
+   ============================================================ */
+.ig-label{transition:opacity .3s}
+.ig-input{transition:all .3s,opacity .3s}
+
+/* ============================================================
+   RESPONSIVE — hide side panels on narrow screens
+   ============================================================ */
+@media(max-width:1100px){
+  .side-left,.side-right{display:none !important}
+  .login-panel{width:400px}
+}
+@media(max-width:600px){
+  .login-panel{width:calc(100% - 40px) !important}
+  .cb-title{font-size:22px}
+  .top-bar{padding:14px 20px}
+  .bottom-bar{padding:10px 20px}
+}
+
+/* ============================================================
+   WELCOME SCREEN — Particle Text Canvas
+   ============================================================ */
+.welcome-layer{position:fixed;inset:0;z-index:40;display:none;pointer-events:none}
+.welcome-layer.show{display:block}
+canvas.welCanvas{position:fixed;top:0;left:0;width:100%;height:100%}
+.wl-bottom{position:fixed;bottom:5vh;left:50%;transform:translateX(-50%);z-index:41;text-align:center;pointer-events:none}
+.wl-divider{width:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.45),rgba(168,85,247,.25),rgba(0,212,255,.45),transparent);margin:0 auto 16px;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+.wl-divider.in{width:360px}
+.wl-sub{font-family:'JetBrains Mono';font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(0,212,255,0);transition:color 1.5s;overflow:hidden;white-space:nowrap;border-right:2px solid transparent;padding-right:4px;display:inline-block}
+.wl-sub.typing{border-right-color:rgba(0,212,255,.6);animation:blink .6s step-end infinite}
+.wl-sub.in{color:rgba(0,212,255,.5)}
+.wl-sub.done{border-right-color:transparent;animation:none}
+@keyframes blink{50%{border-right-color:transparent}}
+.wl-badges{display:flex;gap:16px;margin-top:20px;justify-content:center;opacity:0;transform:translateY(8px);transition:all 1s}
+.wl-badges.in{opacity:1;transform:translateY(0)}
+.wl-badge{font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,212,255,.4);padding:8px 18px;border:1px solid rgba(0,212,255,.15);display:flex;align-items:center;gap:7px;background:rgba(5,15,30,.5)}
+.wl-badge-dot{width:5px;height:5px;border-radius:50%;background:#00e68a;box-shadow:0 0 6px rgba(0,230,138,.3)}
+
+/* ============================================================
+   ENHANCEMENT: Sharper HUD borders + subtle glow (additive)
+   ============================================================ */
+.badge{border-color:rgba(0,212,255,.28)!important;box-shadow:0 0 12px rgba(0,212,255,.04),inset 0 0 15px rgba(0,140,255,.03)}
+.info-card{border-color:rgba(0,212,255,.22)!important;box-shadow:0 0 10px rgba(0,212,255,.03),inset 0 0 12px rgba(0,100,180,.02)}
+.info-card:hover{border-color:rgba(0,212,255,.35)!important;box-shadow:0 0 18px rgba(0,212,255,.06),inset 0 0 15px rgba(0,140,255,.03)}
+.lp-card{border-color:rgba(0,212,255,.32)!important}
+.lp-card::before,.lp-card::after{border-color:rgba(0,212,255,.8)!important}
+.lp-corner-bl,.lp-corner-br{border-color:rgba(0,212,255,.8)!important}
+.lp-topglow{width:90%!important;left:5%!important;background:linear-gradient(90deg,transparent,rgba(0,212,255,.4),rgba(120,200,255,.5),rgba(0,212,255,.4),transparent)!important}
+/* ============================================================
+   ENHANCEMENT: Nebula gradient clouds for depth (additive)
+   ============================================================ */
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(0,60,140,.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 20%, rgba(40,20,100,.06) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 60%, rgba(0,80,160,.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 70%, rgba(20,10,80,.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 15% 75%, rgba(0,50,120,.04) 0%, transparent 45%);
+  animation:nebulaShift 30s ease-in-out infinite alternate}
+@keyframes nebulaShift{0%{opacity:.8;transform:scale(1)}100%{opacity:1;transform:scale(1.05)}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="scan-line"></div>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar" id="topBar">
+  <div class="tb-logo">
+    <div class="tb-icon"></div>
+    <div class="tb-text">
+      <div class="tb-name">Sixapart Healthcare</div>
+      <div class="tb-sub">Revenue Cycle Management</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-status"><div class="tb-dot"></div><div class="tb-status-text">Systems Online</div></div>
+    <div class="tb-clock" id="clock"></div>
+  </div>
+</div>
+
+<!-- Branding integrated into login card -->
+
+<!-- ===== LEFT SIDE BADGES ===== -->
+<div class="side-left" id="sideLeft">
+  <div class="badge">
+    <div class="badge-icon"><svg viewBox="0 0 20 24" fill="none"><path d="M10 1L1 5.5v7c0 6 3.8 10 9 12 5.2-2 9-6 9-12v-7L10 1z" stroke="rgba(0,212,255,.5)" stroke-width="1.3" fill="rgba(0,212,255,.04)"/><path d="M7 12.5l2.5 2.5L14 10" stroke="rgba(0,230,138,.6)" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="badge-text">
+      <div class="badge-t1">HIPAA Compliant</div>
+      <div class="badge-t2">45 CFR Part 164</div>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">Encryption</div>
+    <div class="ic-value">AES-256 / TLS 1.3</div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">End-to-End Encrypted</div></div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">Authentication</div>
+    <div class="ic-value">Multi-Factor / RBAC</div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">Role-Based Access Control</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">Session Audit Trail</div></div>
+  </div>
+</div>
+
+<!-- ===== RIGHT SIDE BADGES ===== -->
+<div class="side-right" id="sideRight">
+  <div class="info-card">
+    <div class="ic-label">Client</div>
+    <div class="ic-value">Kennebec Pharmacy & Home Care</div>
+    <div class="ic-row"><div class="ic-dot c"></div><div class="ic-text">KPHC — DME / HME Provider</div></div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">Platform Modules</div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">S3 Orders Intelligence</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">Referral & Intake Intelligence</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">Infusion Intelligence Suite</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">Denials Intelligence Suite</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">RCM Command Center</div></div>
+    <div class="ic-row"><div class="ic-dot c"></div><div class="ic-text">SIA Knowledge Assistant</div></div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">Infrastructure</div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">US-East — 12ms Latency</div></div>
+    <div class="ic-row"><div class="ic-dot g"></div><div class="ic-text">99.97% Uptime</div></div>
+  </div>
+</div>
+
+<!-- ===== LOGIN PANEL ===== -->
+<div class="login-panel" id="loginPanel">
+  <div class="lp-card">
+    <div class="lp-shimmer"></div>
+    <div class="lp-topglow"></div>
+    <div class="lp-depth"></div>
+    <div class="lp-corner-bl"></div>
+    <div class="lp-corner-br"></div>
+    <div class="lp-header">
+      <div style="font-size:11px;font-weight:300;letter-spacing:7px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px">Welcome to</div>
+      <div style="font-size:22px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.9);line-height:1.3">Sixapart <span style="color:rgba(0,212,255,.9)">AI-Powered</span></div>
+      <div style="font-size:22px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.9);line-height:1.3">RCM Intelligence Platform</div>
+      <div style="font-family:'JetBrains Mono';font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(0,212,255,.45);margin-top:6px">Next-Gen Revenue Cycle Analytics</div>
+    </div>
+    <div class="lp-sep"></div>
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lp-lock"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,.7)" stroke-width="1.5"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1" fill="rgba(0,212,255,.7)"/></svg></div>
+      <div style="font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:rgba(0,212,255,.45)">Authenticate to continue</div>
+    </div>
+    <div class="input-group" id="inputGroup">
+      <div class="ig-label-row">
+        <div class="ig-label" id="igLabel">Operator Identity</div>
+        <div class="ig-leds"><div class="ig-led" id="led1"></div><div class="ig-led" id="led2"></div><div class="ig-led" id="led3"></div></div>
+      </div>
+      <div class="ig-field">
+        <input class="ig-input" id="mainInput" type="text" placeholder="Enter username" autocomplete="off" autofocus>
+        <div class="ig-bar"><div class="ig-bar-fill" id="barFill"></div></div>
+      </div>
+    </div>
+    <button class="lp-submit" id="submitBtn" onclick="handleSubmit()">Initiate Access</button>
+    <div class="lp-error" id="errorMsg"></div>
+    <div class="lp-hint" id="hint">Press Enter to transmit</div>
+  </div>
+</div>
+
+<!-- ===== BOTTOM BAR ===== -->
+<div class="bottom-bar" id="bottomBar">
+  <div class="phi-notice">
+    <div class="phi-line phi-warn"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1L1 10.5h10L6 1z" stroke="rgba(255,180,40,.5)" stroke-width="1" fill="none"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="rgba(255,180,40,.5)" stroke-width="1" stroke-linecap="round"/><circle cx="6" cy="9" r=".5" fill="rgba(255,180,40,.5)"/></svg>This system processes Protected Health Information (PHI) — Authorized users only</div>
+    <div class="phi-line phi-legal">Unauthorized access violates HIPAA regulations (45 CFR §164) and federal law (18 U.S.C. §1030)</div>
+    <div class="phi-copy">&copy; 2026 Sixapart Healthcare LLC — All rights reserved</div>
+  </div>
+  <div class="bb-right-col">
+    <div class="bb-ver">Sixapart RCM Platform v4.2.1</div>
+    <div class="bb-session">Session: <span id="sessionId"></span></div>
+  </div>
+</div>
+
+<!-- ===== WELCOME — Particle Text ===== -->
+<div class="welcome-layer" id="welcomeLayer">
+  <canvas class="welCanvas" id="welCanvas"></canvas>
+  <div class="wl-bottom" id="wlBottom" style="opacity:0">
+    <div class="wl-divider" id="wDivider"></div>
+    <div class="wl-sub" id="wSub"></div>
+    <div class="wl-badges" id="wBadges">
+      <div class="wl-badge"><div class="wl-badge-dot"></div>system online</div>
+      <div class="wl-badge"><div class="wl-badge-dot"></div>encrypted</div>
+      <div class="wl-badge"><div class="wl-badge-dot"></div>hipaa compliant</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SETUP
+// ============================================================
+var cv = document.getElementById('c'), gl = cv.getContext('2d');
+var W, H, CX, CY, PR;
+var time = 0, phase = 'username', pulses = [], userName = '';
+var keystrokeTrails = [];
+var impactFlash = 0;
+
+function resize() {
+  W = cv.width = innerWidth; H = cv.height = innerHeight;
+  CX = W / 2; CY = H * 0.28;
+  PR = Math.min(W, H) * 0.27;
+  initPlanet();
+}
+
+// Clock + session
+function tickClock() {
+  var d = new Date(), h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+  var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  var el = document.getElementById('clock');
+  if(el) el.textContent = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) + '  ' + h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' '+ap;
+}
+tickClock(); setInterval(tickClock, 1000);
+var sid = 'SXA-'+Math.random().toString(36).substr(2,4).toUpperCase()+'-'+Date.now().toString(36).substr(-4).toUpperCase();
+document.getElementById('sessionId').textContent = sid;
+
+// Stars
+var starLayers = [];
+for (var L = 0; L < 3; L++) {
+  var cnt = L===0?50:L===1?90:160, arr = [];
+  for (var i = 0; i < cnt; i++) arr.push({x:Math.random()*4e3,y:Math.random()*4e3,r:L===0?Math.random()*1.8+.8:L===1?Math.random()+.3:Math.random()*.5+.1,tw:Math.random()*.003+.001,to:Math.random()*6.28,hue:Math.random()>.85?(Math.random()>.5?30:220):210});
+  starLayers.push(arr);
+}
+
+// Debris
+var debris = [];
+for (var di = 0; di < 80; di++) debris.push({a:Math.random()*6.28,sp:.001+Math.random()*.004,tilt:.25+Math.random()*.35,r:Math.random()*1.1+.2,br:Math.random()*.12+.03,dMul:1.15+Math.random()*.55});
+
+// ============================================================
+// ============================================================
+// AI PLANET — Holographic wireframe sphere, neural nodes,
+// data streams, pulsing energy. Dark core + glowing mesh.
+// ============================================================
+var gridNodes = [];
+var gridEdges = [];
+var dataStreams = [];
+var GRID_LAT = 16, GRID_LON = 24;
+
+(function buildGrid(){
+  // Create sphere vertices
+  for(var la=0;la<=GRID_LAT;la++){
+    var lat = (la/GRID_LAT)*Math.PI - Math.PI/2;
+    var count = la===0||la===GRID_LAT ? 1 : GRID_LON;
+    for(var lo=0;lo<count;lo++){
+      gridNodes.push({
+        lat:lat, lon:(lo/count)*Math.PI*2,
+        isHub: Math.random()<.12,
+        pulsePhase: Math.random()*6.28,
+        pulseSpeed: .4+Math.random()*1.8
+      });
+    }
+  }
+  // Build edges
+  var idx=0;
+  for(var la=0;la<=GRID_LAT;la++){
+    var count=la===0||la===GRID_LAT?1:GRID_LON;
+    for(var lo=0;lo<count;lo++){
+      var curr=idx+lo;
+      if(count>1) gridEdges.push([curr, idx+(lo+1)%count]);
+      if(la<GRID_LAT){
+        var nc=la+1===GRID_LAT?1:GRID_LON;
+        var nl=nc===1?0:Math.round(lo*nc/count)%nc;
+        gridEdges.push([curr, idx+count+nl]);
+      }
+    }
+    idx+=count;
+  }
+  // Data streams
+  for(var d=0;d<50;d++){
+    dataStreams.push({edge:Math.floor(Math.random()*gridEdges.length),t:Math.random(),speed:.003+Math.random()*.007,size:1+Math.random()*1.5,hue:Math.random()>.5?280:190});
+  }
+})();
+
+function proj(lat,lon,rot){
+  var cl=Math.cos(lat);
+  return{x:cl*Math.sin(lon+rot), y:Math.sin(lat), z:cl*Math.cos(lon+rot)};
+}
+
+function drawPlanet(){
+  var rot=time*.35, T=time*60;
+
+  // Outer glow — layered for depth
+  var ag=gl.createRadialGradient(CX,CY,PR*.4,CX,CY,PR*1.8);
+  ag.addColorStop(0,'rgba(0,80,160,0.05)');ag.addColorStop(.3,'rgba(0,120,200,0.035)');
+  ag.addColorStop(.6,'rgba(0,160,240,0.015)');ag.addColorStop(1,'transparent');
+  gl.beginPath();gl.arc(CX,CY,PR*1.8,0,6.28);gl.fillStyle=ag;gl.fill();
+
+  // Dark sphere body
+  var bg=gl.createRadialGradient(CX-PR*.15,CY-PR*.15,PR*.05,CX,CY,PR);
+  bg.addColorStop(0,'rgba(6,16,35,0.97)');bg.addColorStop(.6,'rgba(3,10,25,0.98)');bg.addColorStop(1,'rgba(1,4,12,1)');
+  gl.beginPath();gl.arc(CX,CY,PR,0,6.28);gl.fillStyle=bg;gl.fill();
+
+  // Inner core glow
+  var cg=gl.createRadialGradient(CX,CY,0,CX,CY,PR*.55);
+  cg.addColorStop(0,'rgba(0,180,255,0.07)');cg.addColorStop(.4,'rgba(0,100,200,0.03)');cg.addColorStop(1,'transparent');
+  gl.beginPath();gl.arc(CX,CY,PR*.55,0,6.28);gl.fillStyle=cg;gl.fill();
+
+  gl.save();
+  gl.beginPath();gl.arc(CX,CY,PR*1.01,0,6.28);gl.clip();
+
+  // ---- WIREFRAME EDGES ----
+  gridEdges.forEach(function(e){
+    var n1=gridNodes[e[0]],n2=gridNodes[e[1]];
+    var p1=proj(n1.lat,n1.lon,rot),p2=proj(n2.lat,n2.lon,rot);
+    var az=(p1.z+p2.z)/2;
+    if(az<-.5) return; // Cull far back
+    var x1=CX+p1.x*PR*.92,y1=CY+p1.y*PR*.92;
+    var x2=CX+p2.x*PR*.92,y2=CY+p2.y*PR*.92;
+    var vis=Math.max(0,(az+.5)/1.5);
+    var alpha=vis*(.06+vis*.14);
+    gl.beginPath();gl.moveTo(x1,y1);gl.lineTo(x2,y2);
+    gl.strokeStyle='rgba(0,190,255,'+alpha+')';
+    gl.lineWidth=.4+vis*.7;gl.stroke();
+  });
+
+  // ---- NODES ----
+  gridNodes.forEach(function(n){
+    var p=proj(n.lat,n.lon,rot);
+    if(p.z<-.3) return;
+    var sx=CX+p.x*PR*.92, sy=CY+p.y*PR*.92;
+    var vis=Math.max(0,(p.z+.3)/1.3);
+
+    if(n.isHub){
+      var pulse=.5+Math.sin(T*n.pulseSpeed+n.pulsePhase)*.35;
+      var sz=(2.2+pulse*1.8)*vis;
+      // Glow halo
+      var ng=gl.createRadialGradient(sx,sy,0,sx,sy,sz*5);
+      ng.addColorStop(0,'rgba(0,212,255,'+(vis*.25*pulse)+')');ng.addColorStop(1,'transparent');
+      gl.beginPath();gl.arc(sx,sy,sz*5,0,6.28);gl.fillStyle=ng;gl.fill();
+      // Core
+      gl.beginPath();gl.arc(sx,sy,sz,0,6.28);
+      gl.fillStyle='rgba(0,235,255,'+(vis*(.45+pulse*.35))+')';gl.fill();
+      // White hot center
+      gl.beginPath();gl.arc(sx,sy,sz*.4,0,6.28);
+      gl.fillStyle='rgba(200,240,255,'+(vis*pulse*.3)+')';gl.fill();
+    } else {
+      gl.beginPath();gl.arc(sx,sy,vis*.9,0,6.28);
+      gl.fillStyle='rgba(0,170,240,'+(vis*.18)+')';gl.fill();
+    }
+  });
+
+  // ---- DATA STREAMS ----
+  dataStreams.forEach(function(ds){
+    ds.t+=ds.speed;
+    if(ds.t>1){ds.t-=1;ds.edge=Math.floor(Math.random()*gridEdges.length);}
+    var e=gridEdges[ds.edge];
+    var n1=gridNodes[e[0]],n2=gridNodes[e[1]];
+    var p1=proj(n1.lat,n1.lon,rot),p2=proj(n2.lat,n2.lon,rot);
+    var az=(p1.z+p2.z)/2;
+    if(az<-.1) return;
+    var vis=Math.max(0,az+.1);
+    var px=CX+(p1.x+(p2.x-p1.x)*ds.t)*PR*.92;
+    var py=CY+(p1.y+(p2.y-p1.y)*ds.t)*PR*.92;
+    gl.beginPath();gl.arc(px,py,ds.size*vis,0,6.28);
+    gl.fillStyle='hsla('+ds.hue+',85%,70%,'+(vis*.55)+')';gl.fill();
+    gl.beginPath();gl.arc(px,py,ds.size*3.5*vis,0,6.28);
+    gl.fillStyle='hsla('+ds.hue+',85%,70%,'+(vis*.05)+')';gl.fill();
+  });
+
+  gl.restore();
+
+  // Atmosphere rim
+  var rg=gl.createRadialGradient(CX,CY,PR*.84,CX,CY,PR*1.16);
+  rg.addColorStop(0,'transparent');rg.addColorStop(.25,'rgba(0,130,220,0.02)');
+  rg.addColorStop(.55,'rgba(0,190,255,0.08)');rg.addColorStop(.8,'rgba(0,210,255,0.04)');rg.addColorStop(1,'transparent');
+  gl.beginPath();gl.arc(CX,CY,PR*1.16,0,6.28);gl.fillStyle=rg;gl.fill();
+
+  // Impact flash
+  if(impactFlash>.01){
+    var fg=gl.createRadialGradient(CX,CY,0,CX,CY,PR*1.4);
+    fg.addColorStop(0,'rgba(0,212,255,'+(impactFlash*.2)+')');
+    fg.addColorStop(.4,'rgba(100,180,255,'+(impactFlash*.08)+')');
+    fg.addColorStop(1,'transparent');
+    gl.beginPath();gl.arc(CX,CY,PR*1.4,0,6.28);gl.fillStyle=fg;gl.fill();
+    impactFlash*=.92;
+  }
+}
+
+function initPlanet(){}
+
+function drawStars(){var t=Date.now();starLayers.forEach(function(ly){ly.forEach(function(s){var x=s.x%W,y=s.y%H,a=.25+Math.sin(t*s.tw+s.to)*.25;gl.beginPath();gl.arc(x,y,s.r,0,6.28);gl.fillStyle='hsla('+s.hue+',30%,82%,'+a+')';gl.fill()})});}
+
+function drawDebris(){debris.forEach(function(d){d.a+=d.sp;var dd=PR*d.dMul,x=CX+Math.cos(d.a)*dd,y=CY+Math.sin(d.a)*dd*d.tilt;var behind=Math.sin(d.a)<0&&Math.abs(x-CX)<PR;gl.beginPath();gl.arc(x,y,d.r*(behind?.5:1),0,6.28);gl.fillStyle='rgba(150,200,230,'+(behind?d.br*.15:d.br+.03)+')';gl.fill()});}
+
+function addPulse(){pulses.push({r:PR,alpha:.12,speed:2+Math.random()*1.5});}
+
+function drawPulses(){pulses.forEach(function(p){p.r+=p.speed;p.alpha-=.003;gl.beginPath();gl.arc(CX,CY,p.r,0,6.28);gl.strokeStyle='rgba(0,212,255,'+Math.max(0,p.alpha)+')';gl.lineWidth=1;gl.stroke()});pulses=pulses.filter(function(p){return p.alpha>0});}
+
+function drawRings(){for(var r=0;r<3;r++){var rr=PR*(1.15+r*.16),a=.02+.01-r*.003;if(a<=0)continue;gl.beginPath();gl.ellipse(CX,CY,rr,rr*.35,.15,0,6.28);gl.strokeStyle='rgba(0,212,255,'+a+')';gl.lineWidth=.5;if(r===1)gl.setLineDash([5,8]);gl.stroke();gl.setLineDash([]);}}
+
+// Lens flare
+function drawFlare(){var sx=W*.83,sy=H*.1,a=.06+Math.sin(time*.5)*.02;gl.beginPath();gl.arc(sx,sy,2.5,0,6.28);gl.fillStyle='rgba(200,230,255,'+(a*4)+')';gl.fill();gl.strokeStyle='rgba(200,230,255,'+a+')';gl.lineWidth=.5;for(var s=0;s<4;s++){var ang=s*Math.PI/4+time*.05,len=20+Math.sin(time*2+s)*6;gl.beginPath();gl.moveTo(sx+Math.cos(ang)*3,sy+Math.sin(ang)*3);gl.lineTo(sx+Math.cos(ang)*len,sy+Math.sin(ang)*len);gl.stroke();}var fg=gl.createRadialGradient(sx,sy,0,sx,sy,40);fg.addColorStop(0,'rgba(180,220,255,'+(a*.4)+')');fg.addColorStop(1,'transparent');gl.beginPath();gl.arc(sx,sy,40,0,6.28);gl.fillStyle=fg;gl.fill();}
+
+// KEYSTROKE TRAILS
+function emitKeystrokeTrail(){
+  var rect=document.getElementById('loginPanel').getBoundingClientRect();
+  var sx=rect.left+rect.width*.3+Math.random()*rect.width*.4,sy=rect.top+rect.height*.4;
+  for(var i=0;i<6;i++){
+    keystrokeTrails.push({x:sx+(Math.random()-.5)*20,y:sy+(Math.random()-.5)*10,vx:(CX-sx)*.008+(Math.random()-.5)*2,vy:(CY-sy)*.008+(Math.random()-.5)*2,life:1,size:1+Math.random()*1.5,hue:Math.random()>.3?190:270});
+  }
+}
+function drawKeystrokeTrails(){
+  for(var i=keystrokeTrails.length-1;i>=0;i--){
+    var p=keystrokeTrails[i],dx=CX-p.x,dy=CY-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+    var grav=.15/Math.max(1,dist*.01);
+    p.vx+=(dx/dist)*grav;p.vy+=(dy/dist)*grav;p.x+=p.vx;p.y+=p.vy;p.life-=.012;
+    if(dist<PR*.9){p.life=0;impactFlash=Math.min(1,impactFlash+.15);}
+    if(p.life<=0){keystrokeTrails.splice(i,1);continue;}
+    gl.beginPath();gl.arc(p.x,p.y,p.size*p.life,0,6.28);
+    gl.fillStyle='hsla('+p.hue+',80%,70%,'+(p.life*.5)+')';gl.fill();
+    gl.beginPath();gl.arc(p.x,p.y,p.size*3,0,6.28);
+    gl.fillStyle='hsla('+p.hue+',80%,70%,'+(p.life*.04)+')';gl.fill();
+  }
+}
+
+
+// ============================================================
+// ENHANCEMENT: Extra stars + floating particles
+// ============================================================
+var extraStars=[];for(var es=0;es<200;es++)extraStars.push({x:Math.random()*4000,y:Math.random()*4000,r:es<30?1+Math.random()*1.2:es<80?.3+Math.random()*.5:.1+Math.random()*.2,tw:Math.random()*6.28,ts:.003+Math.random()*.02,hue:Math.random()>.9?(Math.random()>.5?30:350):200+Math.random()*40,ba:.1+Math.random()*.35});
+var floatingParts=[];for(var fp2=0;fp2<100;fp2++)floatingParts.push({x:Math.random()*4000,y:Math.random()*4000,size:.2+Math.random()*1.2,speed:.03+Math.random()*.12,drift:(Math.random()-.5)*.08,tw:Math.random()*6.28,twSpeed:.008+Math.random()*.02,bright:.06+Math.random()*.2,hue:Math.random()>.75?260:195});
+function drawExtraStars(){for(var i=0;i<extraStars.length;i++){var s=extraStars[i];s.tw+=s.ts;var x=s.x%W,y=s.y%H,a=s.ba*(.3+Math.sin(s.tw)*.7);if(a<.02)continue;gl.beginPath();gl.arc(x,y,s.r,0,6.28);gl.fillStyle='hsla('+s.hue+',35%,85%,'+a+')';gl.fill();if(s.r>1){gl.beginPath();gl.arc(x,y,s.r*3,0,6.28);gl.fillStyle='hsla('+s.hue+',35%,80%,'+(a*.04)+')';gl.fill();}}}
+function drawFloatingParticles(){for(var i=0;i<floatingParts.length;i++){var p=floatingParts[i];p.y-=p.speed;p.x+=p.drift;p.tw+=p.twSpeed;if(p.y<-10)p.y=H+10;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;var a=p.bright*(.3+Math.sin(p.tw)*.7);if(a<.015)continue;gl.beginPath();gl.arc(p.x%W,p.y,p.size,0,6.28);gl.fillStyle='hsla('+p.hue+',75%,80%,'+a+')';gl.fill();if(p.size>.8){gl.beginPath();gl.arc(p.x%W,p.y,p.size*3.5,0,6.28);gl.fillStyle='hsla('+p.hue+',65%,70%,'+(a*.03)+')';gl.fill();}}}
+
+// ============================================================
+// ENHANCEMENT: Subtle energy halo around planet
+// ============================================================
+function drawEnergyHalo(){var hR=PR*1.15,tY=.35,rot=.08;gl.save();gl.globalCompositeOperation='lighter';var passes=[{w:20,a:.008},{w:10,a:.015},{w:4,a:.025},{w:1.5,a:.06}];for(var i=0;i<passes.length;i++){gl.beginPath();gl.ellipse(CX,CY,hR,hR*tY,rot,0,6.283);gl.strokeStyle='rgba(0,200,255,'+passes[i].a+')';gl.lineWidth=passes[i].w;gl.stroke();}var sw=time*1.2;gl.beginPath();gl.ellipse(CX,CY,hR,hR*tY,rot,sw,sw+Math.PI*.5);gl.strokeStyle='rgba(140,230,255,.12)';gl.lineWidth=3;gl.stroke();gl.beginPath();gl.ellipse(CX,CY,hR,hR*tY,rot,sw+.05,sw+Math.PI*.45);gl.strokeStyle='rgba(0,180,255,.03)';gl.lineWidth=14;gl.stroke();var sw2=-time*.7+Math.PI;gl.beginPath();gl.ellipse(CX,CY,hR*.98,hR*tY*.98,rot,sw2,sw2+Math.PI*.35);gl.strokeStyle='rgba(120,80,255,.07)';gl.lineWidth=2;gl.stroke();gl.restore();}
+
+// ============================================================
+// ENHANCEMENT: Planet atmospheric glow
+// ============================================================
+function drawPlanetGlow(){gl.save();gl.globalCompositeOperation='lighter';var g1=gl.createRadialGradient(CX,CY,PR*.5,CX,CY,PR*1.4);g1.addColorStop(0,'rgba(0,120,200,.04)');g1.addColorStop(.5,'rgba(0,160,220,.02)');g1.addColorStop(1,'rgba(0,100,180,0)');gl.beginPath();gl.arc(CX,CY,PR*1.4,0,6.28);gl.fillStyle=g1;gl.fill();var g2=gl.createRadialGradient(CX,CY,0,CX,CY,PR*.6);g2.addColorStop(0,'rgba(0,180,255,.03)');g2.addColorStop(.6,'rgba(0,140,220,.015)');g2.addColorStop(1,'rgba(0,100,180,0)');gl.beginPath();gl.arc(CX,CY,PR*.6,0,6.28);gl.fillStyle=g2;gl.fill();gl.restore();}
+
+// RENDER
+function render(){
+  gl.fillStyle='rgba(3,8,16,.3)';gl.fillRect(0,0,W,H);
+  time+=.006;
+  drawStars();drawExtraStars();drawFloatingParticles();drawFlare();drawPlanetGlow();drawEnergyHalo();drawDebris();drawPlanet();drawKeystrokeTrails();drawPulses();
+  requestAnimationFrame(render);
+}
+
+resize();addEventListener('resize',resize);
+render();
+
+// ============================================================
+// INPUT LOGIC
+// ============================================================
+var inp = document.getElementById('mainInput');
+var firstKey = true;
+
+function updateLeds(n,max){var lvl=Math.ceil((n/max)*3);for(var i=1;i<=3;i++){var el=document.getElementById('led'+i);el.className='ig-led';if(i<=lvl)el.classList.add(i===3&&n>=max?'green':'on');}}
+
+inp.addEventListener('input',function(){
+  emitKeystrokeTrail();
+  if(phase==='username'){
+    if(firstKey&&inp.value.length>0){firstKey=false;document.getElementById('hint').classList.add('vis');}
+    var len=inp.value.length;
+    document.getElementById('barFill').style.width=Math.min(len/10*100,100)+'%';
+    updateLeds(len,8);addPulse();
+  } else if(phase==='password'){
+    var len=inp.value.length;
+    document.getElementById('barFill').style.width=Math.min(len/8*100,100)+'%';
+    updateLeds(len,6);addPulse();
+    if(len>=4)document.getElementById('submitBtn').classList.add('show');
+    else document.getElementById('submitBtn').classList.remove('show');
+  }
+});
+
+inp.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    if(phase==='username'&&inp.value.trim().length>0) dribbleAndMorph();
+    else if(phase==='password'&&inp.value.length>=4) handleSubmit();
+  }
+});
+
+// ============================================================
+// GRAVITATIONAL DRIBBLE
+// ============================================================
+function dribbleAndMorph(){
+  phase='transition';userName=inp.value.trim();
+  var chars=userName.split('');
+  var rect=document.getElementById('loginPanel').getBoundingClientRect();
+  var startX=rect.left+44,startY=rect.top+rect.height*.45;
+  for(var p=0;p<8;p++)addPulse();
+
+  chars.forEach(function(ch,i){
+    var el=document.createElement('div');el.className='dribble-char';
+    el.textContent=ch.toUpperCase();el.style.fontSize=(22+Math.random()*10)+'px';
+    var px=startX+i*17,py=startY;
+    el.style.left=px+'px';el.style.top=py+'px';
+    document.body.appendChild(el);
+    var burstAngle=-Math.PI/2+(Math.random()-.5)*1.2;
+    var burstSpeed=6+Math.random()*4;
+    var vx=Math.cos(burstAngle)*burstSpeed+(Math.random()-.5)*3;
+    var vy=Math.sin(burstAngle)*burstSpeed;
+    var rot=(Math.random()-.5)*10,ra=0,op=.9,sc=1,arrived=false;
+
+    setTimeout(function(){(function anim(){
+      if(arrived)return;
+      var dx=CX-px,dy=CY-py,dist=Math.sqrt(dx*dx+dy*dy);
+      var grav=800/(dist*dist+500);
+      vx+=(dx/dist)*grav;vy+=(dy/dist)*grav;
+      vx*=.98;vy*=.98;px+=vx;py+=vy;ra+=rot*.95;rot*=.97;
+      var closeness=1-Math.min(1,Math.max(0,(dist-PR)/(startY-CY)));
+      sc=.3+(1-closeness)*.7;op=.9-closeness*.6;
+      if(dist<PR*.7){arrived=true;el.remove();impactFlash=Math.min(1,impactFlash+.3);return;}
+      if(op<=.05||px<-200||px>W+200||py<-200){el.remove();return;}
+      el.style.left=px+'px';el.style.top=py+'px';
+      el.style.transform='rotate('+ra+'deg) scale('+Math.max(.1,sc)+')';el.style.opacity=Math.max(0,op);
+      requestAnimationFrame(anim);
+    })()},i*50);
+  });
+
+  inp.value='';inp.style.opacity='0';
+
+  setTimeout(function(){
+    // Smooth morph: fade label out
+    var label = document.getElementById('igLabel');
+    label.style.opacity = '0';
+
+    setTimeout(function(){
+      // Swap while invisible, then fade back in
+      label.textContent = 'Authorization Key';
+      label.style.opacity = '1';
+      inp.type = 'password';
+      inp.placeholder = 'Enter passkey';
+      inp.style.opacity = '1';
+      document.getElementById('barFill').style.width = '0';
+      document.getElementById('hint').textContent = 'Press Enter to authenticate';
+      document.getElementById('led1').className = 'ig-led';
+      document.getElementById('led2').className = 'ig-led';
+      document.getElementById('led3').className = 'ig-led';
+
+      // Border pulse during morph
+      var frame = document.getElementById('loginPanel').querySelector('.lp-card');
+      frame.style.boxShadow = '0 0 50px rgba(0,212,255,0.12), inset 0 0 30px rgba(0,212,255,0.03)';
+      setTimeout(function(){ frame.style.boxShadow = 'none'; }, 1000);
+
+      phase = 'password';
+      inp.focus();
+    }, 250);
+  }, 500);
+}
+
+// ============================================================
+// RBAC CREDENTIALS
+// ============================================================
+var CREDS = {
+  'kphc':           { pw: 'Sixapart2026!',    role: 'admin',      label: 'Administrator',              access: ['portal','s3','ri','infusion','denials','command'] },
+  'kphc.executive': { pw: 'Kennebec@2026',    role: 'executive',  label: 'Executive Viewer',           access: ['portal','s3','ri','infusion','denials','command'] },
+  'rcm.user':       { pw: 'RCM@KPHC2026',     role: 'rcm',        label: 'RCM Command Center',         access: ['command'] },
+  's3.user':        { pw: 'S3@KPHC2026',       role: 's3',         label: 'S3 Orders Intelligence',     access: ['s3'] },
+  'denials.user':   { pw: 'Denials@KPHC2026',  role: 'denials',    label: 'Denials Intelligence',       access: ['denials'] },
+  'infusion.user':  { pw: 'Infusion@KPHC2026', role: 'infusion',   label: 'Infusion Intelligence',      access: ['infusion'] },
+  'ri.user':        { pw: 'RI@KPHC2026',       role: 'ri',         label: 'Referral & Intake',          access: ['ri'] }
+};
+var authenticatedUser = null;
+
+// ============================================================
+// WELCOME — Particle to text + REDIRECT
+// ============================================================
+function handleSubmit(){
+  if(phase!=='password'||inp.value.length<4)return;
+
+  // --- VALIDATE CREDENTIALS ---
+  var pw = inp.value;
+  var cred = CREDS[userName.toLowerCase()];
+
+  if(!cred || cred.pw !== pw){
+    // Invalid — shake card, show error, reset
+    var card = document.getElementById('loginPanel').querySelector('.lp-card');
+    var errEl = document.getElementById('errorMsg');
+    card.classList.add('error');
+    errEl.textContent = 'Invalid credentials — Access denied';
+    errEl.classList.add('show');
+    setTimeout(function(){ card.classList.remove('error'); }, 600);
+    setTimeout(function(){ errEl.classList.remove('show'); }, 3000);
+    inp.value = '';
+    document.getElementById('barFill').style.width = '0';
+    document.getElementById('led1').className = 'ig-led';
+    document.getElementById('led2').className = 'ig-led';
+    document.getElementById('led3').className = 'ig-led';
+    document.getElementById('submitBtn').classList.remove('show');
+    inp.focus();
+    return;
+  }
+
+  // --- VALID — store session and proceed ---
+  authenticatedUser = cred;
+  sessionStorage.setItem('sxa_user', userName.toLowerCase());
+  sessionStorage.setItem('sxa_role', cred.role);
+  sessionStorage.setItem('sxa_label', cred.label);
+  sessionStorage.setItem('sxa_access', JSON.stringify(cred.access));
+  sessionStorage.setItem('sxa_session', sid);
+  sessionStorage.setItem('sxa_time', new Date().toISOString());
+
+  phase='welcome';
+  for(var i=0;i<10;i++)addPulse();
+
+  ['loginPanel','topBar','sideLeft','sideRight','bottomBar'].forEach(function(id){
+    var el=document.getElementById(id);if(el){el.style.transition='opacity 1.5s';el.style.opacity='0';}
+  });
+  document.querySelector('.scan-line').style.transition='opacity 1s';
+  document.querySelector('.scan-line').style.opacity='0';
+
+  setTimeout(function(){
+    document.getElementById('welcomeLayer').classList.add('show');
+
+    // Wait for font before sampling pixels
+    document.fonts.ready.then(function(){
+    var wc=document.getElementById('welCanvas'),wx=wc.getContext('2d');
+    var PW=wc.width=W,PH=wc.height=H;
+
+    var textLines=[
+      {text:'Welcome to',size:Math.round(PW*.022),weight:'300',yPct:.52,color:[180,215,245],delay:200},
+      {text:'Kennebec Pharmacy &',size:Math.round(PW*.048),weight:'700',yPct:.63,color:[0,212,255],delay:900},
+      {text:'Home Care',size:Math.round(PW*.048),weight:'700',yPct:.74,color:[0,212,255],delay:1700}
+    ];
+
+    var crispLayers=textLines.map(function(line){
+      var oc=document.createElement('canvas');oc.width=PW;oc.height=PH;
+      var octx=oc.getContext('2d');
+      octx.font=line.weight+' '+line.size+'px Outfit';octx.textAlign='center';octx.textBaseline='middle';
+      octx.fillStyle='rgb('+line.color.join(',')+')';octx.fillText(line.text,PW/2,PH*line.yPct);
+      return{canvas:oc,opacity:0,targetOpacity:0,delay:line.delay+2200};
+    });
+
+    var wParts=[],startTime=performance.now();
+    textLines.forEach(function(line){
+      var oc=document.createElement('canvas');oc.width=PW;oc.height=PH;
+      var octx=oc.getContext('2d');
+      octx.font=line.weight+' '+line.size+'px Outfit';octx.textAlign='center';octx.textBaseline='middle';
+      octx.fillStyle='#fff';octx.fillText(line.text,PW/2,PH*line.yPct);
+      var imgData=octx.getImageData(0,0,PW,PH).data,step=3;
+      for(var y=0;y<PH;y+=step)for(var x=0;x<PW;x+=step){
+        if(imgData[(y*PW+x)*4+3]>100){
+          var edge=Math.random(),sx2,sy2;
+          if(edge<.25){sx2=Math.random()*PW;sy2=-50-Math.random()*300;}
+          else if(edge<.5){sx2=Math.random()*PW;sy2=PH+50+Math.random()*300;}
+          else if(edge<.75){sx2=-50-Math.random()*300;sy2=Math.random()*PH;}
+          else{sx2=PW+50+Math.random()*300;sy2=Math.random()*PH;}
+          wParts.push({x:sx2,y:sy2,tx:x,ty:y,vx:0,vy:0,r:line.color[0],g:line.color[1],b:line.color[2],size:.8+Math.random()*.6,delay:line.delay+Math.random()*500,ease:.05+Math.random()*.03,friction:.83+Math.random()*.06,arrived:false,alpha:0});
+        }
+      }
+    });
+    if(wParts.length>12000){wParts.sort(function(){return Math.random()-.5});wParts=wParts.slice(0,12000);}
+    var pFading=false,pOp=1;
+
+    function welRender(now){
+      var elapsed=now-startTime;wx.clearRect(0,0,PW,PH);
+      if(pOp>.01){for(var i=0;i<wParts.length;i++){var p=wParts[i];if(elapsed<p.delay)continue;
+        var dx=p.tx-p.x,dy=p.ty-p.y;p.vx+=dx*p.ease;p.vy+=dy*p.ease;p.vx*=p.friction;p.vy*=p.friction;p.x+=p.vx;p.y+=p.vy;
+        if(dx*dx+dy*dy<1&&!p.arrived){p.arrived=true;p.x=p.tx;p.y=p.ty;}
+        var age=(elapsed-p.delay)/600;p.alpha=Math.min(1,age)*.7*pOp;if(p.alpha<.01)continue;
+        wx.fillStyle='rgba('+p.r+','+p.g+','+p.b+','+p.alpha.toFixed(3)+')';
+        wx.fillRect(p.x-p.size*.5,p.y-p.size*.5,p.size,p.size);
+      }}
+      for(var j=0;j<crispLayers.length;j++){var cl=crispLayers[j];if(elapsed>cl.delay)cl.targetOpacity=1;
+        cl.opacity+=(cl.targetOpacity-cl.opacity)*.04;if(cl.opacity>.01){wx.globalAlpha=cl.opacity;wx.drawImage(cl.canvas,0,0);wx.globalAlpha=1;}}
+      if(!pFading&&elapsed>textLines[2].delay+2600)pFading=true;
+      if(pFading){pOp-=.015;if(pOp<0)pOp=0;}
+      requestAnimationFrame(welRender);
+    }
+    requestAnimationFrame(welRender);
+
+    setTimeout(function(){document.getElementById('wlBottom').style.transition='opacity 1.2s';document.getElementById('wlBottom').style.opacity='1';document.getElementById('wDivider').classList.add('in');},4500);
+    setTimeout(function(){var sub=document.getElementById('wSub'),txt='RCM Intelligence Platform',ci2=0;sub.classList.add('typing');sub.classList.add('in');var ti=setInterval(function(){if(ci2<txt.length){sub.textContent+=txt[ci2];ci2++;}else{clearInterval(ti);setTimeout(function(){sub.classList.add('done');},800);}},50);},5000);
+    setTimeout(function(){document.getElementById('wBadges').classList.add('in');},6500);
+
+    // REDIRECT to portal after welcome sequence completes
+    setTimeout(function(){
+      sessionStorage.setItem('sxa_warp','1');window.location.href = 'index.html';
+    }, 8500);
+
+    }); // fonts.ready
+  },1800);
+}
+
+document.body.addEventListener('click',function(){if(phase==='username'||phase==='password')inp.focus();});
+</script>
+</body>
+</html>

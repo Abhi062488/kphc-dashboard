@@ -1,0 +1,10 @@
+node_modules/
+.env
+.DS_Store
+*.log
+auth.db
+auth.db-journal
+.idea/
+.vscode/settings.json
+dist/
+build/

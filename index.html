@@ -1,0 +1,3115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sixapart Healthcare × KPHC | Revenue Cycle Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === Unified Scrollbar === */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,0.04);border-radius:3px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.22)}
+*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.12) rgba(0,0,0,0.04)}
+
+:root {
+  --coral:#dc2626;--electric:#0d9488;--violet:#7c3aed;--golden:#ca8a04;--lime:#4d7c0f;
+  --sky:#0284c7;--hotpink:#db2777;--rose:#e11d48;--indigo:#4f46e5;--teal:#0f766e;
+  --orange:#ea580c;--mint:#059669;--fuchsia:#c026d3;--amber:#d97706;--cyan:#0891b2;
+  --lavender:#7c3aed;
+  --bg:#f4f6fb;--bg2:#ffffff;--card:rgba(255,255,255,.95);
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --t1:#111827;--t2:#4b5563;--t3:#6b7280;--t4:#9ca3af;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;min-height:100vh}
+::selection{background:rgba(78,205,196,0.3);color:white}
+/* ═══════════════════════════════════════════════ */
+/*  PHASE 0 : BACKGROUND ATMOSPHERE               */
+/* ═══════════════════════════════════════════════ */
+#atmosphere{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora{position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(from 180deg at 50% 50%,
+  rgba(78,205,196,0.08) 0deg,rgba(168,85,247,0.06) 60deg,rgba(56,189,248,0.05) 120deg,
+  rgba(217,70,239,0.04) 180deg,rgba(78,205,196,0.06) 240deg,rgba(244,114,182,0.04) 300deg,
+  rgba(78,205,196,0.08) 360deg);animation:auroraRotate 60s linear infinite;filter:blur(80px)}
+.mesh-1{position:absolute;width:900px;height:900px;top:-15%;right:-10%;background:radial-gradient(ellipse,rgba(168,85,247,0.12) 0%,transparent 70%);animation:meshFloat 25s ease-in-out infinite;filter:blur(60px)}
+.mesh-2{position:absolute;width:800px;height:800px;bottom:-15%;left:-10%;background:radial-gradient(ellipse,rgba(78,205,196,0.1) 0%,transparent 70%);animation:meshFloat 30s ease-in-out infinite reverse;filter:blur(60px)}
+.mesh-3{position:absolute;width:600px;height:600px;top:30%;left:40%;background:radial-gradient(ellipse,rgba(56,189,248,0.06) 0%,transparent 70%);animation:meshFloat 35s ease-in-out infinite;animation-delay:-10s;filter:blur(80px)}
+.mesh-4{position:absolute;width:500px;height:500px;bottom:20%;right:20%;background:radial-gradient(ellipse,rgba(217,70,239,0.05) 0%,transparent 70%);animation:meshFloat 28s ease-in-out infinite;animation-delay:-15s;filter:blur(70px)}
+#particleCanvas{position:fixed;inset:0;z-index:1;pointer-events:none}
+.scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(78,205,196,0.15),rgba(168,85,247,0.1),transparent);z-index:2;pointer-events:none;animation:scanDown 8s linear infinite;opacity:.5}
+.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.02) 1px,transparent 1px);background-size:60px 60px;animation:gridPulse 4s ease-in-out infinite}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(200,210,230,0.15) 100%)}
+
+/* ═══════════════════════════════════════════════ */
+/*  PHASE 1 : LOGIN GATE                          */
+/* ═══════════════════════════════════════════════ */
+#loginGate{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:all 1.2s cubic-bezier(0.4,0,0.2,1)}
+#loginGate.exit{opacity:0;transform:scale(1.05);filter:blur(10px);pointer-events:none}
+.login-container{text-align:center;max-width:460px;width:92%;position:relative;z-index:1}
+.login-logo{margin-bottom:40px;position:relative}
+.login-logo-ring{width:110px;height:110px;margin:0 auto 0;border-radius:24px;position:relative;display:flex;align-items:center;justify-content:center}
+.login-logo-ring::before{content:'';position:absolute;inset:-2px;border-radius:24px;background:conic-gradient(from 0deg,var(--electric),var(--violet),var(--sky),var(--fuchsia),var(--electric));animation:ringRotate 4s linear infinite;opacity:.7}
+.login-logo-ring::after{content:'';position:absolute;inset:0;border-radius:24px;background:#f4f6fb}
+.login-logo-inner{position:relative;z-index:1;width:110px;height:110px;border-radius:24px;background:linear-gradient(135deg,rgba(78,205,196,0.15),rgba(168,85,247,0.1));display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px)}
+.login-logo-inner svg{width:50px;height:50px;fill:url(#shieldGrad);filter:drop-shadow(0 0 20px rgba(78,205,196,0.3))}
+.login-brands{display:flex;align-items:center;justify-content:center;gap:16px;margin:24px 0 8px}
+.login-brand-1{font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--electric),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-sep{width:1px;height:20px;background:linear-gradient(180deg,transparent,var(--border2),transparent)}
+.login-brand-2{font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--violet),var(--fuchsia));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-title{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px;background:linear-gradient(135deg,var(--t1) 0%,var(--t2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-subtitle{font-size:13px;color:var(--t3);margin-bottom:32px;letter-spacing:0.5px}
+.login-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(40px);border-radius:24px;padding:36px 32px;position:relative;overflow:hidden;border:1px solid var(--border)}
+.login-card::before{content:'';position:absolute;inset:-1px;border-radius:24px;background:conic-gradient(from 180deg,transparent 50%,rgba(78,205,196,0.15) 60%,rgba(168,85,247,0.1) 70%,transparent 80%);animation:cardBorderSweep 6s linear infinite;z-index:-1}
+.login-card-head{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px}
+.login-card-head svg{opacity:.6}
+.login-card-head span{font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--t2);letter-spacing:1px}
+.login-field{text-align:left;margin-bottom:18px}
+.login-label{font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px}
+.login-input-wrap{position:relative}
+.login-input-wrap svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:.3}
+.login-input{width:100%;padding:15px 16px 15px 46px;background:rgba(0,0,0,0.03);border:1px solid var(--border);border-radius:14px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .4s cubic-bezier(0.4,0,0.2,1)}
+.login-input:focus{border-color:rgba(78,205,196,0.4);box-shadow:0 0 0 4px rgba(78,205,196,0.06),0 0 30px rgba(78,205,196,0.05);background:rgba(0,0,0,0.04)}
+.login-input::placeholder{color:var(--t3)}
+.pass-toggle{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;opacity:.3;transition:opacity .2s}
+.pass-toggle:hover{opacity:.7}
+#loginError{display:none;color:var(--coral);font-size:12px;font-weight:600;margin-bottom:16px;padding:12px 16px;background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.12);border-radius:14px;text-align:left}
+.login-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--electric),var(--sky));border:none;color:white;border-radius:14px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .4s;letter-spacing:.5px;position:relative;overflow:hidden;margin-top:8px}
+.login-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(transparent,rgba(0,0,0,0.12),transparent);transform:rotate(45deg);animation:btnSheen 4s ease-in-out infinite}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(78,205,196,0.25)}
+#loginSpinner{display:none;width:22px;height:22px;border:2.5px solid rgba(0,0,0,0.25);border-top:2.5px solid white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.login-attempts{margin-top:14px;font-size:11px;color:var(--t3);display:none}
+.login-hipaa{display:inline-flex;align-items:center;gap:8px;background:rgba(78,205,196,0.05);border:1px solid rgba(78,205,196,0.12);border-radius:24px;padding:8px 20px;font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;color:var(--electric);letter-spacing:2px;text-transform:uppercase;margin-top:28px}
+.login-hipaa .dot{width:6px;height:6px;border-radius:50%;background:var(--electric);animation:blink 1.5s infinite}
+.login-footer{margin-top:24px;font-size:10px;color:var(--t3);line-height:1.8;letter-spacing:.3px}
+
+/* ═══════════════════════════════════════════════ */
+/*  PHASE 2 : BOOT SEQUENCE                       */
+/* ═══════════════════════════════════════════════ */
+#bootScreen{position:fixed;inset:0;z-index:9000;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column}
+#bootScreen.active{display:flex}
+.boot-logo{font-family:'Outfit',sans-serif;font-size:42px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--electric),var(--cyan),var(--sky),var(--violet),var(--fuchsia));background-size:400% 400%;animation:gradShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:40px;opacity:0;animation:bootFadeIn .8s ease .2s forwards,gradShift 3s ease infinite}
+.boot-progress{width:280px;height:3px;background:var(--t4);border-radius:24px;overflow:hidden;opacity:0;animation:bootFadeIn .5s ease .5s forwards}
+.boot-bar{height:100%;width:0;background:linear-gradient(90deg,var(--electric),var(--sky),var(--violet));border-radius:24px;transition:width 2s cubic-bezier(0.4,0,0.2,1)}
+.boot-status{margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);letter-spacing:1px;opacity:0;animation:bootFadeIn .5s ease .8s forwards}
+.boot-items{margin-top:16px;text-align:left;width:280px}
+.boot-item{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);padding:3px 0;opacity:0;transition:opacity .3s}
+.boot-item.on{opacity:1;color:var(--electric)}
+.boot-item .check{color:var(--lime);margin-right:8px}
+
+/* ═══════════════════════════════════════════════ */
+/*  PHASE 3 : MAIN PLATFORM                       */
+/* ═══════════════════════════════════════════════ */
+#platform{position:relative;z-index:5;min-height:100vh;display:none;opacity:0;transition:opacity 1s ease}
+#platform.active{display:block;opacity:1}
+
+/* TOP BAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(255,255,255,0.92);backdrop-filter:blur(40px);border-bottom:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.topbar::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(78,205,196,0.2) 20%,rgba(168,85,247,0.15) 50%,rgba(56,189,248,0.2) 80%,transparent 100%)}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--electric),var(--sky));display:flex;align-items:center;justify-content:center;position:relative}
+.tb-logo::before{content:'';position:absolute;inset:-1px;border-radius:8px;background:conic-gradient(from 0deg,var(--electric),var(--violet),var(--sky),var(--electric));animation:ringRotate 8s linear infinite;opacity:.5;z-index:-1}
+.tb-logo span{font-family:'Outfit',sans-serif;font-size:11px;font-weight:900;color:white}
+.tb-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:var(--t1);letter-spacing:.5px}
+.tb-sub{font-size:10px;color:var(--t3);letter-spacing:1px;margin-top:-2px}
+.tb-right{display:flex;align-items:center;gap:20px}
+.tb-clock{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t2);font-weight:600}
+.tb-hipaa{display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;color:var(--electric);letter-spacing:1.5px;text-transform:uppercase;background:rgba(78,205,196,0.06);padding:6px 14px;border-radius:24px;border:1px solid rgba(78,205,196,0.1)}
+.tb-hipaa .dot{width:5px;height:5px;border-radius:50%;background:var(--electric);animation:blink 1.5s infinite}
+.tb-user{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:24px;background:rgba(0,0,0,0.04);border:1px solid var(--border);cursor:pointer;transition:all .3s}
+.tb-user:hover{background:rgba(0,0,0,0.08);border-color:var(--border2)}
+.tb-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--fuchsia));display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;color:white}
+.tb-username{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t2);font-weight:600}
+
+/* HERO SECTION */
+.hero{padding:100px 48px 40px;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(78,205,196,0.06);border:1px solid rgba(78,205,196,0.12);border-radius:24px;padding:8px 20px;font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;color:var(--electric);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:24px;animation:fadeSlideUp .8s ease both}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--electric);animation:blink 1.5s infinite}
+.hero-title{font-family:'Outfit',sans-serif;font-size:52px;font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:14px;animation:fadeSlideUp .8s ease .1s both}
+.hero-title .grad{background:linear-gradient(135deg,var(--electric) 0%,var(--cyan) 25%,var(--sky) 50%,var(--violet) 75%,var(--fuchsia) 100%);background-size:300% 300%;animation:gradShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:16px;color:var(--t2);max-width:560px;margin:0 auto 40px;line-height:1.7;animation:fadeSlideUp .8s ease .2s both}
+
+/* KPI TICKER RIBBON */
+.kpi-ribbon{display:flex;justify-content:center;gap:24px;margin-bottom:48px;animation:fadeSlideUp .8s ease .3s both;flex-wrap:wrap}
+.kpi-pill{display:flex;align-items:center;gap:10px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:10px 22px;transition:all .4s;cursor:default}
+.kpi-pill:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.kpi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kpi-pill-label{font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.kpi-pill-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800}
+
+/* SUITE GRID */
+.suites-section{padding:0 48px 80px;max-width:1320px;margin:0 auto}
+.suites-label{font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px;animation:fadeSlideUp .8s ease .4s both}
+.suites-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.suites-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+/* SUITE CARD */
+.suite-card{position:relative;border-radius:24px;overflow:hidden;cursor:pointer;transition:all .5s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;perspective:1000px}
+.suite-card:hover{transform:translateY(-8px) scale(1.015);z-index:10}
+.suite-card::before{content:'';position:absolute;inset:-1px;border-radius:24px;z-index:0;background:conic-gradient(from var(--card-angle,0deg),var(--c1),var(--c2),var(--c3),var(--c1));background-size:300% 300%;opacity:.3;transition:opacity .5s}
+.suite-card:hover::before{opacity:.7;animation:borderShift 3s ease infinite}
+.suite-card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0%,rgba(0,0,0,0.04) 10%,transparent 20%);animation:cardSheen 8s linear infinite;z-index:2;pointer-events:none;border-radius:24px}
+.sc-inner{position:relative;z-index:1;background:var(--card);backdrop-filter:blur(30px);border-radius:24px;padding:32px 28px;min-height:300px;display:flex;flex-direction:column;border:1px solid var(--border);transition:all .5s}
+.suite-card:hover .sc-inner{border-color:var(--border2);background:rgba(245,247,250,0.98)}
+
+/* Card Header */
+.sc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.sc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;transition:all .5s}
+.sc-icon::before{content:'';position:absolute;inset:-1px;border-radius:14px;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.3;transition:opacity .5s}
+.sc-icon::after{content:'';position:absolute;inset:0;border-radius:14px;background:var(--bg2)}
+.sc-icon span{position:relative;z-index:1}
+.suite-card:hover .sc-icon{transform:scale(1.1) rotate(-5deg)}
+.suite-card:hover .sc-icon::before{opacity:.6}
+.sc-freq{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:24px;border:1px solid var(--border)}
+.sc-freq.daily{color:var(--electric);border-color:rgba(78,205,196,0.2);background:rgba(78,205,196,0.05)}
+.sc-freq.monthly{color:var(--violet);border-color:rgba(168,85,247,0.2);background:rgba(168,85,247,0.05)}
+.sc-freq.weekly{color:var(--golden);border-color:rgba(202,138,4,0.2);background:rgba(202,138,4,0.05)}
+
+/* Card Body */
+.sc-title{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px;transition:all .3s}
+.suite-card:hover .sc-title{background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sc-desc{font-size:13px;color:var(--t3);line-height:1.6;margin-bottom:auto}
+.sc-pages{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* Card Metrics Preview */
+.sc-metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.sc-metric{padding:10px 12px;background:rgba(0,0,0,0.02);border-radius:8px;border:1px solid rgba(0,0,0,0.04);transition:all .3s}
+.suite-card:hover .sc-metric{background:rgba(0,0,0,0.04);border-color:var(--border)}
+.sc-metric-label{font-family:'Outfit',sans-serif;font-size:8.5px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.sc-metric-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800}
+
+/* Card Arrow */
+.sc-arrow{position:absolute;bottom:28px;right:28px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .5s;z-index:3}
+.sc-arrow svg{width:16px;height:16px;stroke:var(--t3);transition:all .4s}
+.suite-card:hover .sc-arrow{background:linear-gradient(135deg,var(--c1),var(--c2));border-color:transparent;transform:scale(1.1)}
+.suite-card:hover .sc-arrow svg{stroke:white;transform:translateX(2px)}
+
+/* CARD COLORS */
+.sc-s3{--c1:var(--electric);--c2:var(--cyan);--c3:var(--teal);--card-angle:0deg}
+.sc-denials{--c1:var(--violet);--c2:var(--fuchsia);--c3:var(--indigo);--card-angle:60deg}
+.sc-infusion{--c1:var(--coral);--c2:var(--orange);--c3:var(--rose);--card-angle:120deg}
+.sc-ri{--c1:var(--sky);--c2:var(--cyan);--c3:var(--electric);--card-angle:180deg}
+.sc-rcm{--c1:var(--golden);--c2:var(--amber);--c3:var(--orange);--card-angle:240deg}
+
+/* Hero card (RCM) spans 2 cols */
+.suite-card.hero-card{grid-column:span 2}
+.hero-card .sc-inner{min-height:300px}
+.hero-card .sc-metrics{grid-template-columns:repeat(4,1fr)}
+
+/* ═══════════════════════════════════════════════ */
+/*  PHASE 4 : DASHBOARD VIEWER                    */
+/* ═══════════════════════════════════════════════ */
+#dashViewer{position:fixed;inset:0;z-index:200;display:none;background:var(--bg)}
+#dashViewer.active{display:block;animation:viewerIn .6s ease}
+.viewer-bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;padding:0 20px;background:rgba(255,255,255,0.97);backdrop-filter:blur(30px);z-index:10;border-bottom:1px solid var(--border)}
+.viewer-back{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.06);border:1px solid var(--border);color:var(--t2);padding:7px 18px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .3s;letter-spacing:.3px}
+.viewer-back:hover{background:rgba(78,205,196,0.08);border-color:rgba(78,205,196,0.2);color:var(--electric)}
+.viewer-back svg{width:14px;height:14px}
+.viewer-title{margin-left:16px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--t2)}
+.viewer-frame{position:absolute;top:48px;left:0;right:0;bottom:0}
+.viewer-frame iframe{width:100%;height:100%;border:none;background:var(--bg)}
+
+/* ═══════════════════════════════════════════════ */
+/*  FOOTER                                        */
+/* ═══════════════════════════════════════════════ */
+.platform-footer{text-align:center;padding:40px 48px 60px;border-top:1px solid var(--border)}
+.footer-brands{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-brand{font-family:'Outfit',sans-serif;font-size:13px;font-weight:800}
+.footer-text{font-size:11px;color:var(--t3);line-height:1.8}
+
+/* ═══════════════════════════════════════════════ */
+/*  KEYFRAMES                                     */
+/* ═══════════════════════════════════════════════ */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes borderShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes auroraRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes meshFloat{0%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,-50px) scale(1.1)}50%{transform:translate(-30px,40px) scale(.95)}75%{transform:translate(50px,30px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+@keyframes scanDown{0%{top:-2px;opacity:0}5%{opacity:.5}95%{opacity:.5}100%{top:100%;opacity:0}}
+@keyframes gridPulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes cardBorderSweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes cardSheen{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes btnSheen{0%{transform:rotate(45deg) translateX(-150%)}50%{transform:rotate(45deg) translateX(150%)}100%{transform:rotate(45deg) translateX(150%)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bootFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes viewerIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
+@keyframes headShake{0%{transform:translateX(0)}12%{transform:translateX(-4px)}24%{transform:translateX(4px)}36%{transform:translateX(-3px)}48%{transform:translateX(3px)}60%{transform:translateX(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(78,205,196,0.1)}50%{box-shadow:0 0 40px rgba(78,205,196,0.2)}}
+@keyframes floatUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shieldPulse{0%,100%{box-shadow:0 0 60px rgba(78,205,196,0.15)}50%{box-shadow:0 0 100px rgba(78,205,196,0.25)}}
+
+/* === Responsive Design === */
+@media(max-width:1400px){
+  .gc-grid{grid-template-columns:repeat(3,1fr)!important}
+}
+@media(max-width:1024px){
+  .gc-grid{grid-template-columns:repeat(2,1fr)!important}
+  .portal-header h1{font-size:2rem!important}
+  .ribbon{flex-wrap:wrap;gap:12px!important}
+  .ribbon .rb{min-width:120px!important}
+}
+@media(max-width:768px){
+  .gc-grid{grid-template-columns:1fr!important}
+  .portal-header h1{font-size:1.5rem!important}
+  .portal-header{padding:30px 16px!important}
+  body{padding:8px!important}
+  .ribbon{justify-content:center!important}
+}
+
+*{color-adjust:exact!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .sidebar,.splash,.nav,.top-bar,.hipaa-splash,#splash{display:none!important}
+  .main{margin:0!important;padding:12px!important}
+  .page{break-inside:avoid;page-break-inside:avoid;padding:8px!important}
+  .card,.gcard,.kc,.kpi{background:rgba(240,242,248,0.95)!important;border:1px solid #ddd!important;color:#1a1a2e!important;break-inside:avoid}
+  .card *,.gcard *,.kc *,.kpi *{color:#1a1a2e!important}
+  .card h3,.gcard h3,.card h4,.gcard h4{color:#f4f6fb!important}
+  table{border-collapse:collapse!important}
+  td,th{border:1px solid #ccc!important;padding:4px 8px!important;color:#1a1a2e!important}
+  th{background:#e8eaf0!important;font-weight:700!important}
+  @page{margin:0.5in;size:landscape}
+  .bar,.hbar-fill,.donut-ring{print-color-adjust:exact!important}
+  canvas{max-width:100%!important}
+  a[href]::after{content:none!important}
+}
+
+/* === Staggered Loading Animation === */
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.load-anim{opacity:0;animation:fadeSlideUp .5s cubic-bezier(.22,.61,.36,1) forwards}
+.load-d1{animation-delay:.1s} .load-d2{animation-delay:.18s} .load-d3{animation-delay:.26s}
+.load-d4{animation-delay:.34s} .load-d5{animation-delay:.42s} .load-d6{animation-delay:.5s}
+.load-d7{animation-delay:.58s} .load-d8{animation-delay:.66s} .load-d9{animation-delay:.74s}
+.load-d10{animation-delay:.82s} .load-d11{animation-delay:.9s} .load-d12{animation-delay:.98s}
+
+/* === Light Mode — Universal === */
+
+/* === Dashboard Controls === */
+.dash-controls{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;gap:10px;align-items:center}
+.dash-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.12);border-radius:14px;color:#374151;font-family:inherit;font-size:0.78rem;font-weight:600;letter-spacing:0.3px;cursor:pointer;backdrop-filter:blur(16px);transition:all .3s ease;box-shadow:0 2px 12px rgba(0,0,0,0.08);white-space:nowrap}
+.dash-btn:hover{background:rgba(245,247,250,0.95);border-color:rgba(0,0,0,0.25);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.dash-btn svg{width:15px;height:15px;opacity:.8;flex-shrink:0}
+@media print{.dash-controls{display:none!important}}
+
+/* === Full Suite PDF Export === */
+@media print{
+  @page{margin:0.4in;size:landscape}
+  body{background:#fff!important;color:#1a1a2e!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  #splash,.sidebar,[class*="sidebar"],.nav,.top-bar,.topbar,.dash-controls{display:none!important}
+  .main,.app-shell{display:block!important;margin:0!important;opacity:1!important;height:auto!important;overflow:visible!important;grid-template-columns:1fr!important}
+  .card,.gcard,.kc,.kpi,.gc,[class*="-card"]{background:rgba(240,242,248,0.95)!important;border:1px solid #ddd!important;color:#1a1a2e!important;break-inside:avoid;page-break-inside:avoid}
+  .card *,.gcard *,.kc *,.kpi *,h1,h2,h3,h4,td,th,span,p,div{color:#1a1a2e!important}
+  th{background:#e8eaf0!important;font-weight:700!important}
+  td,th{border:1px solid #ccc!important;padding:4px 8px!important;font-size:10px!important}
+  canvas{display:none!important}
+  a[href]::after{content:none!important}
+
+/* ===== KPHC PLATFORM FEATURES ===== */
+.dash-controls{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;gap:10px;align-items:center}
+.dash-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.12);border-radius:14px;color:#374151;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;backdrop-filter:blur(16px);transition:all .3s ease;box-shadow:0 2px 12px rgba(0,0,0,0.08);white-space:nowrap}
+.dash-btn:hover{background:rgba(245,247,250,0.95);border-color:rgba(0,0,0,0.25);transform:translateY(-2px)}
+.dash-btn svg{width:15px;height:15px;opacity:.8;flex-shrink:0}
+@media print{
+  @page{margin:0.4in;size:landscape}
+  body{background:#fff!important;color:#1a1a2e!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  #splash,.sidebar,[class*="sidebar"],.dash-controls,.top-bar,.topbar{display:none!important}
+  .main,.app-shell{display:block!important;margin:0!important;opacity:1!important;height:auto!important;overflow:visible!important;grid-template-columns:1fr!important}
+  
+  .card,.gcard,.kc,.kpi,.gc,[class*="-card"]{background:rgba(240,242,248,0.95)!important;border:1px solid #ddd!important;color:#1a1a2e!important;break-inside:avoid;page-break-inside:avoid}
+  *{color:#1a1a2e!important}
+  th{background:#e8eaf0!important}
+  td,th{border:1px solid #ccc!important;padding:4px 8px!important;font-size:10px!important}
+  canvas{display:none!important}
+  a[href]::after{content:none!important}
+}
+
+/* ═══ LIGHT MODE ═══ */
+</style>
+
+<!-- ═══ MERIDIAN-V1 START ═══ -->
+<style>
+
+/* ═══════════════════════════════════════════════════════════
+   MERIDIAN DESIGN SYSTEM v1.0 — Sixapart Healthcare
+   Phase 1: Unified typography, colors, components, motion
+   Phase 2: Navigation polish, transitions, breadcrumbs
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 1. UNIFIED SHADOW SYSTEM ── */
+:root {
+  --m-shadow-sm: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03);
+  --m-shadow-md: 0 4px 12px rgba(0,0,0,.06), 0 2px 4px rgba(0,0,0,.03);
+  --m-shadow-lg: 0 12px 40px rgba(0,0,0,.1), 0 4px 12px rgba(0,0,0,.04);
+  --m-shadow-hover: 0 8px 24px rgba(0,0,0,.08), 0 4px 8px rgba(0,0,0,.04);
+  --m-radius-sm: 8px;
+  --m-radius-md: 12px;
+  --m-radius-lg: 16px;
+  --m-radius-pill: 24px;
+  --m-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --m-primary: #0d9488;
+  --m-primary-glow: rgba(13,148,136,.12);
+}
+
+/* ── 2. UNIVERSAL TABLE REFINEMENT ── */
+table thead th {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  color: var(--t3, var(--text-muted, #6b7280)) !important;
+  padding: 10px 12px !important;
+  border-bottom: 2px solid var(--m-primary) !important;
+  background: var(--bg, var(--bg-primary, #f4f6fb)) !important;
+  white-space: nowrap;
+}
+table tbody td {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 13px !important;
+  padding: 9px 12px !important;
+  border-bottom: 1px solid rgba(0,0,0,.05) !important;
+  transition: background 0.15s ease !important;
+}
+table tbody td.mono, table tbody td.r {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+table tbody tr:hover td {
+  background: rgba(13,148,136,.03) !important;
+}
+table tbody tr.tr-total td {
+  font-weight: 700 !important;
+  border-top: 2px solid rgba(13,148,136,.2) !important;
+  background: rgba(13,148,136,.03) !important;
+}
+
+/* ── 3. UNIFIED HOVER BEHAVIOR ── */
+.panel, .card, .glass-card, .kpi-card, .gc {
+  transition: var(--m-transition) !important;
+}
+.panel:hover, .card:hover, .glass-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--m-shadow-hover) !important;
+}
+
+/* ── 4. BAR CHART UNIFICATION ── */
+.bar {
+  transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease !important;
+  border-radius: 6px 6px 2px 2px !important;
+}
+.bar-lbl {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+.bar-tip {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+}
+
+/* ── 5. INSIGHT/RECOMMENDATION CARDS ── */
+.insight, [class*="ins-"] {
+  border-radius: var(--m-radius-md) !important;
+  transition: var(--m-transition) !important;
+}
+.insight:hover, [class*="ins-"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--m-shadow-hover) !important;
+}
+
+/* ── 6. NAVIGATION POLISH ── */
+.nav-item {
+  border-radius: var(--m-radius-sm) !important;
+  transition: var(--m-transition) !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+.nav-item:hover {
+  transform: translateX(3px) !important;
+}
+.sb-footer, .sidebar-footer {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.3px !important;
+}
+
+/* ── 7. BACK-TO-PORTAL BUTTON STANDARDIZATION ── */
+[onclick*="portal"], .back-btn, [class*="back"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: var(--m-radius-sm) !important;
+  transition: var(--m-transition) !important;
+}
+
+/* ── 8. SCROLLBAR REFINEMENT ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(13,148,136,.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(13,148,136,.35);
+}
+
+/* ── 9. UNIFIED ANIMATION TIMING ── */
+@keyframes meridianFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes meridianPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@keyframes meridianCountUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── 10. FOCUS & ACCESSIBILITY ── */
+*:focus-visible {
+  outline: 2px solid var(--m-primary) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* ── 11. SECTION TITLE UNIFICATION ── */
+.sec-title, .panel-title, .section-title, [class*="sec-title"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.3px !important;
+}
+.panel-desc, .section-desc, [class*="panel-desc"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12px !important;
+  color: var(--t3, var(--text-muted, #9ca3af)) !important;
+}
+
+/* ── 12. PILL / BADGE / TAG NORMALIZATION ── */
+.tag, .badge, [class*="tag-"], [class*="badge"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 10px !important;
+  border-radius: var(--m-radius-pill) !important;
+  letter-spacing: 0.4px !important;
+}
+
+/* ── 13. DARK MODE MERIDIAN OVERRIDES ── */
+[data-theme="dark"] table thead th {
+  background: var(--bg, #0f1219) !important;
+  border-bottom-color: var(--m-primary) !important;
+  color: var(--t3, #64748b) !important;
+}
+[data-theme="dark"] table tbody tr:hover td {
+  background: rgba(13,148,136,.06) !important;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(13,148,136,.3);
+}
+
+
+/* ═══ MERIDIAN: Portal Enhancement ═══ */
+/* Unified suite card hover */
+.suite-card .sc-inner {
+  transition: var(--m-transition) !important;
+}
+.suite-card:hover .sc-inner {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--m-shadow-lg) !important;
+}
+/* KPI ribbon pill polish */
+.kpi-pill {
+  transition: var(--m-transition) !important;
+  border-radius: var(--m-radius-pill) !important;
+}
+.kpi-pill:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--m-shadow-md) !important;
+}
+.kpi-pill-label {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+}
+.kpi-pill-val {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+/* Suite card metric consistency */
+.sc-metric-label {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+.sc-metric-val {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+</style>
+<!-- ═══ MERIDIAN-V1 END ═══ -->
+
+</head>
+<body>
+<a href="#main-content" style="position:absolute;top:-40px;left:0;background:#4ecdc4;color:#000;padding:8px 16px;z-index:99999;font-family:DM Sans,sans-serif;font-weight:600;transition:top .3s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to main content</a>
+
+<!-- ═══ ATMOSPHERE ═══ -->
+<div id="atmosphere">
+  <div class="aurora"></div>
+  <div class="mesh-1"></div><div class="mesh-2"></div><div class="mesh-3"></div><div class="mesh-4"></div>
+  <div class="grid-overlay"></div>
+</div>
+<canvas id="particleCanvas"></canvas>
+<div class="scan-line"></div>
+<div class="vignette"></div>
+
+<!-- SVG DEFS -->
+<svg style="position:absolute;width:0;height:0" role="img" aria-hidden="true"><defs><linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4ecdc4"/><stop offset="100%" style="stop-color:#38bdf8"/></linearGradient></defs></svg>
+
+<!-- ═══ LOGIN GATE ═══ -->
+<div id="loginGate" style="display:none">
+  <div class="login-container" style="animation:floatUp 1s ease forwards">
+    <div class="login-logo">
+      <div class="login-logo-ring">
+        <div class="login-logo-inner">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="login-brands">
+      <div class="login-brand-1">KPHC</div>
+      <div class="login-sep"></div>
+      <div class="login-brand-2">SIXAPART</div>
+    </div>
+    <div class="login-title">Revenue Cycle Intelligence</div>
+    <div class="login-subtitle">Enterprise Analytics Platform</div>
+    <div class="login-card">
+      <div class="login-card-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="2" role="img" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>SECURE ACCESS</span>
+      </div>
+      <div class="login-field">
+        <label class="login-label">Username</label>
+        <div class="login-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" role="img" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input class="login-input" id="loginUser" type="text" placeholder="Enter username" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+        </div>
+      </div>
+      <div class="login-field">
+        <label class="login-label">Password</label>
+        <div class="login-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" role="img" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input class="login-input" id="loginPass" type="password" placeholder="Enter password" autocomplete="off" onkeydown="if(event.key==='Enter')attemptLogin()">
+          <button class="pass-toggle" onclick="var p=document.getElementById('loginPass');p.type=p.type==='password'?'text':'password'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" role="img" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="loginError"><span id="loginErrorText"></span></div>
+      <button class="login-btn" onclick="attemptLogin()">
+        <span id="loginBtnText">Access Platform</span>
+        <div id="loginSpinner"></div>
+      </button>
+      <div class="login-attempts" id="loginAttempts"><span id="attemptText"></span></div>
+    </div>
+    <div class="login-hipaa"><span class="dot"></span>HIPAA COMPLIANT · PROTECTED HEALTH INFORMATION</div>
+    <div class="login-footer">Authorized access only · All sessions monitored<br>&copy; 2026 Sixapart Healthcare</div>
+  </div>
+</div>
+
+<!-- ═══ BOOT SEQUENCE ═══ -->
+<div id="bootScreen">
+  <div class="boot-logo">Sixapart Intelligence</div>
+  <div class="boot-progress"><div class="boot-bar" id="bootBar"></div></div>
+  <div class="boot-status" id="bootStatus">Initializing platform...</div>
+  <div class="boot-items" id="bootItems">
+    <div class="boot-item" id="bi0"><span class="check">✓</span> Authentication verified</div>
+    <div class="boot-item" id="bi1"><span class="check">✓</span> Loading S3 Orders Intelligence</div>
+    <div class="boot-item" id="bi2"><span class="check">✓</span> Loading Denials Intelligence Suite</div>
+    <div class="boot-item" id="bi3"><span class="check">✓</span> Loading Infusion Intelligence Suite</div>
+    <div class="boot-item" id="bi4"><span class="check">✓</span> Loading Referral & Intake Suite</div>
+    <div class="boot-item" id="bi5"><span class="check">✓</span> Loading RCM Command Center</div>
+    <div class="boot-item" id="bi6"><span class="check">✓</span> Platform ready</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN PLATFORM ═══ -->
+<div id="platform">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo"><span>S6</span></div>
+      <div>
+        <div class="tb-title">Sixapart Healthcare × KPHC</div>
+        <div class="tb-sub">REVENUE CYCLE INTELLIGENCE PLATFORM</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-hipaa"><span class="dot"></span>HIPAA SECURED</div>
+      <div class="tb-clock" id="liveClock"></div>
+      <div class="tb-user" onclick="logout()" role="button" tabindex="0">
+        <div class="tb-avatar">K</div>
+        <div class="tb-username">KPHC</div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" role="img" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span>KENNEBEC PHARMACY & HOME CARE</div>
+    <div class="hero-title">
+      <span class="grad">Revenue Cycle</span><br>Intelligence Platform
+    </div>
+    <div class="hero-sub">Five intelligence suites. One unified command center. Every metric your operation needs — verified, visualized, and ready for action.</div>
+
+    <!-- KPI RIBBON -->
+    <div class="kpi-ribbon">
+      <div class="kpi-pill"><div class="kpi-dot" style="background:var(--electric)"></div><div class="kpi-pill-label">Feb Deposits</div><div class="kpi-pill-val" style="color:var(--electric)">$1.08M</div></div>
+      <div class="kpi-pill"><div class="kpi-dot" style="background:var(--sky)"></div><div class="kpi-pill-label">Total A/R</div><div class="kpi-pill-val" style="color:var(--sky)">$1.91M</div></div>
+      <div class="kpi-pill"><div class="kpi-dot" style="background:var(--coral)"></div><div class="kpi-pill-label">Feb Denials Exposure</div><div class="kpi-pill-val" style="color:var(--coral)">$49K</div></div>
+      <div class="kpi-pill"><div class="kpi-dot" style="background:var(--golden)"></div><div class="kpi-pill-label">Collectability</div><div class="kpi-pill-val" style="color:var(--golden)">91.5%</div></div>
+      <div class="kpi-pill"><div class="kpi-dot" style="background:var(--violet)"></div><div class="kpi-pill-label">Orders Volume</div><div class="kpi-pill-val" style="color:var(--violet)" data-count="35730">0</div></div>
+    </div>
+  </div>
+
+  <!-- SUITES -->
+  <div class="suites-section">
+    <div class="suites-label">INTELLIGENCE SUITES</div>
+    <div class="suites-grid">
+
+      <!-- RCM COMMAND CENTER (HERO) -->
+      <div class="suite-card hero-card sc-rcm" onclick="openDash('command-center','RCM Command Center')" role="button" tabindex="0" style="animation:fadeSlideUp .8s ease .5s both">
+        <div class="sc-inner">
+          <div class="sc-head">
+            <div class="sc-icon"><span>🏛️</span></div>
+            <div class="sc-freq monthly">MONTHLY</div>
+          </div>
+          <div class="sc-title">RCM Command Center</div>
+          <div class="sc-desc">The single source of truth for executive leadership. Complete revenue cycle overview — A/R intelligence, deposits tracking, denial impact, operational efficiency, and credit resolution.</div>
+          <div class="sc-pages">6 Pages · A/R · Deposits · Denials · Operations · Credits · Scope</div>
+          <div class="sc-metrics">
+            <div class="sc-metric"><div class="sc-metric-label">Total A/R</div><div class="sc-metric-val" style="color:var(--golden)">$1.91M</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Feb Deposits</div><div class="sc-metric-val" style="color:var(--amber)">$1.08M</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Team Size</div><div class="sc-metric-val" style="color:var(--orange)">17 FTEs</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Feb Denials Exposure</div><div class="sc-metric-val" style="color:var(--coral)">$49K</div></div>
+          </div>
+          <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" role="img" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <!-- S3 ORDERS -->
+      <div class="suite-card sc-s3" onclick="openDash('s3-orders','S3 Orders Intelligence')" role="button" tabindex="0" style="animation:fadeSlideUp .8s ease .6s both">
+        <div class="sc-inner">
+          <div class="sc-head">
+            <div class="sc-icon"><span>📦</span></div>
+            <div class="sc-freq daily">DAILY</div>
+          </div>
+          <div class="sc-title">S3 Orders Intelligence</div>
+          <div class="sc-desc">Daily queue monitoring, 13-month volume trends, day-of-week patterns, and real-time queue status by admin.</div>
+          <div class="sc-pages">4 Pages · Exec Pulse · Trends · Daily · Queue</div>
+          <div class="sc-metrics">
+            <div class="sc-metric"><div class="sc-metric-label">12mo Orders</div><div class="sc-metric-val" style="color:var(--electric)">33,443</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Avg/Day</div><div class="sc-metric-val" style="color:var(--cyan)">124.8</div></div>
+          </div>
+          <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" role="img" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <!-- DENIALS -->
+      <div class="suite-card sc-denials" onclick="openDash('denials','Denials Intelligence Suite')" role="button" tabindex="0" style="animation:fadeSlideUp .8s ease .7s both">
+        <div class="sc-inner">
+          <div class="sc-head">
+            <div class="sc-icon"><span>⚖️</span></div>
+            <div class="sc-freq monthly">MONTHLY</div>
+          </div>
+          <div class="sc-title">Denials Intelligence Suite</div>
+          <div class="sc-desc">Denial pattern analysis, collectability rates, payer & LOB breakdowns, and strategic recommendations.</div>
+          <div class="sc-pages">13 Pages · YTD 2026 · Jan & Feb · Advanced Analytics</div>
+          <div class="sc-metrics">
+            <div class="sc-metric"><div class="sc-metric-label">Denied Claims</div><div class="sc-metric-val" style="color:var(--violet)">585</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Collectability</div><div class="sc-metric-val" style="color:var(--fuchsia)">91.5%</div></div>
+          </div>
+          <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" role="img" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <!-- INFUSION -->
+      <div class="suite-card sc-infusion" onclick="openDash('infusion','Infusion Intelligence Suite')" role="button" tabindex="0" style="animation:fadeSlideUp .8s ease .8s both">
+        <div class="sc-inner">
+          <div class="sc-head">
+            <div class="sc-icon"><span>💉</span></div>
+            <div class="sc-freq weekly">WEEKLY</div>
+          </div>
+          <div class="sc-title">Infusion Intelligence Suite</div>
+          <div class="sc-desc">Insurance verifications, prior authorizations, therapy type analytics, and infusion operations tracking.</div>
+          <div class="sc-pages">6 Pages · Verifications · Authorizations · Insights</div>
+          <div class="sc-metrics">
+            <div class="sc-metric"><div class="sc-metric-label">Verifications</div><div class="sc-metric-val" style="color:var(--coral)">162</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Auth Approval</div><div class="sc-metric-val" style="color:var(--orange)">97%</div></div>
+          </div>
+          <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" role="img" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <!-- REFERRAL & INTAKE (WIDE) -->
+      <div class="suite-card hero-card sc-ri" onclick="openDash('referral-intake','Referral & Intake Intelligence')" role="button" tabindex="0" style="animation:fadeSlideUp .8s ease .9s both">
+        <div class="sc-inner">
+          <div class="sc-head">
+            <div class="sc-icon"><span>📋</span></div>
+            <div class="sc-freq daily">DAILY</div>
+          </div>
+          <div class="sc-title">Referral & Intake Intelligence Suite</div>
+          <div class="sc-desc">Complete referral flow analytics — 14-month trends, daily operations, queue intelligence, intake document processing, and strategic operational recommendations for CPAP, Nebulizer, and supply operations.</div>
+          <div class="sc-pages">6 Pages · Executive · Referrals · Intake · Daily Ops · Queue · Strategy</div>
+          <div class="sc-metrics">
+            <div class="sc-metric"><div class="sc-metric-label">Total Referrals</div><div class="sc-metric-val" style="color:var(--sky)">9,189</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Intake Processed</div><div class="sc-metric-val" style="color:var(--cyan)">6,447</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Daily Avg</div><div class="sc-metric-val" style="color:var(--electric)">42.0/day</div></div>
+            <div class="sc-metric"><div class="sc-metric-label">Active Queue</div><div class="sc-metric-val" style="color:var(--teal)">62</div></div>
+          </div>
+          <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" role="img" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="platform-footer">
+    <div class="footer-brands">
+      <div class="footer-brand" style="background:linear-gradient(135deg,var(--electric),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Kennebec Pharmacy & Home Care</div>
+      <div style="width:1px;height:16px;background:var(--border2)"></div>
+      <div class="footer-brand" style="background:linear-gradient(135deg,var(--violet),var(--fuchsia));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Sixapart Healthcare</div>
+    </div>
+    <div class="footer-text">Revenue Cycle Intelligence Platform · 5 Intelligence Suites · 28 Analytical Pages<br>HIPAA Compliant · All data verified against source · &copy; 2026 Sixapart Healthcare</div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD VIEWER ═══ -->
+<div id="dashViewer">
+  <div class="viewer-bar">
+    <button class="viewer-back" onclick="closeDash()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" role="img" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Platform
+    </button>
+    <div class="viewer-title" id="viewerTitle"></div>
+  </div>
+  <div class="viewer-frame">
+    <iframe id="viewerFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+  </div>
+</div>
+
+<script>
+/* ═══ PARTICLE SYSTEM ═══ */
+(function(){
+  var cvs=document.getElementById('particleCanvas'),ctx=cvs.getContext('2d');
+  var W,H,particles=[],mouseX=0,mouseY=0;
+  var colors=['#4ecdc4','#a855f7','#38bdf8','#f472b6','#22d3ee','#ffd93d','#818cf8','#fb923c'];
+  function resize(){W=cvs.width=innerWidth;H=cvs.height=innerHeight}
+  resize();window.addEventListener('resize',resize);
+  document.addEventListener('mousemove',function(e){mouseX=e.clientX;mouseY=e.clientY});
+  for(var i=0;i<90;i++){
+    particles.push({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      r:Math.random()*2+.5,
+      c:colors[Math.floor(Math.random()*colors.length)],
+      o:Math.random()*.5+.15
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(function(p,i){
+      // Mouse influence
+      var dx=mouseX-p.x,dy=mouseY-p.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<200){
+        p.vx+=dx*0.00003;
+        p.vy+=dy*0.00003;
+      }
+      p.x+=p.vx;p.y+=p.vy;
+      p.vx*=0.999;p.vy*=0.999;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c;ctx.globalAlpha=p.o;ctx.fill();
+      // Connections
+      for(var j=i+1;j<particles.length;j++){
+        var p2=particles[j];
+        var dx2=p.x-p2.x,dy2=p.y-p2.y,dist=Math.sqrt(dx2*dx2+dy2*dy2);
+        if(dist<130){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);
+          ctx.strokeStyle=p.c;ctx.globalAlpha=0.08*(1-dist/130);
+          ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ═══ LIVE CLOCK ═══ */
+function updateClock(){
+  var now=new Date();
+  var h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  var ampm=h>=12?'PM':'AM';h=h%12||12;
+  var el=document.getElementById('liveClock');
+  if(el)el.textContent=h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' '+ampm;
+}
+setInterval(updateClock,1000);updateClock();
+
+/* ═══ COUNT-UP ANIMATION ═══ */
+function animateCounters(){
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    var target=parseInt(el.dataset.count);
+    var prefix=el.dataset.prefix||'';
+    var suffix=el.dataset.suffix||'';
+    var isCurrency=el.dataset.format==='currency';
+    var duration=1500;var start=Date.now();
+    function tick(){
+      var elapsed=Date.now()-start;
+      var progress=Math.min(elapsed/duration,1);
+      var eased=1-Math.pow(1-progress,3);
+      var current=Math.round(target*eased);
+      if(isCurrency){
+        el.textContent=prefix+Math.round(current/1000)+suffix;
+      }else{
+        el.textContent=prefix+current.toLocaleString()+suffix;
+      }
+      if(progress<1)requestAnimationFrame(tick);
+    }
+    tick();
+  });
+}
+
+/* ═══ AUTHENTICATION ═══ */
+async function sha256(msg){
+  var b=new TextEncoder().encode(msg);
+  var h=await crypto.subtle.digest('SHA-256',b);
+  return Array.from(new Uint8Array(h)).map(function(x){return x.toString(16).padStart(2,'0')}).join('');
+}
+var CREDS=[
+{u:'18a90cc42c8e87d5c9951916c20e5c347055302d0cbbdaf9ee9cd516b9b58c5e',p:'74c8d576a9291423bc9a8549a40dda9911a099e62bbfb7c25eeb763674b28f99',r:'admin',n:'Platform Admin'},
+{u:'309aecdf5a591e57ef2781152ebda0d8bf507772eaf09d1ed88cf4474802f5c4',p:'92d5abb99369bc4324a7754eeceae3488f4afedf3b7d2700db216d78618c0f0c',r:'rcm',n:'RCM Command Center'},
+{u:'94479c7a723dd90832fd507cf792f7421bf9e8ab60f8d9c209dd805d012e1c80',p:'6a87bd8ac0a24f9f5a695e8ba475ce718c19cad8afc6e80f093f87a444978193',r:'s3',n:'S3 Orders Team'},
+{u:'af844d2dd4fa1bb4c18b8b720d6b8071e708bdfadfbc7cfd6ef0ba5309ba5f76',p:'594c99901f5d68efeba156504362fd0e13bf75591ee28ca6681d2fae82b1fe16',r:'denials',n:'Denials Team'},
+{u:'8c0e3d6180ff3e6d6a69bfca1fc2cdb77ff10d75eb3a44a12051bc2c2b8521a0',p:'6bc5705a44277184b875812369a08665dc8e604953d533e6dc37ddf649cb2107',r:'infusion',n:'Infusion Team'},
+{u:'d64a25ff77586a31dca811d1943e493cc2f2fc0b71e2feec126027ac2aa26bdd',p:'6fb8b9953977603d527b6848304d974291c636b282f27955011641b57d1152c5',r:'ri',n:'Referral & Intake Team'},
+{u:'124700adc91397d86982c3aae3964c0823f9454aa4ac7289254b06d718fcb444',p:'052a8f305828709e21700c4dfa6a4e02c2519963b0c411fd57c2154b2b1e464c',r:'exec_viewer',n:'KPHC Executive'}
+];
+var attempts=0,lockout=0;
+
+async function attemptLogin(){
+  if(Date.now()<lockout){showError('Locked. Try again in '+Math.ceil((lockout-Date.now())/1000)+'s.');return}
+  var u=document.getElementById('loginUser').value.trim().toLowerCase();
+  var p=document.getElementById('loginPass').value;
+  if(!u||!p){showError('Please enter both username and password.');return}
+  document.getElementById('loginBtnText').style.display='none';
+  document.getElementById('loginSpinner').style.display='block';
+  var uh=await sha256(u),ph=await sha256(p);
+  await new Promise(function(r){setTimeout(r,900)});
+  var ok=false;
+  var rbacMatch=null;for(var i=0;i<CREDS.length;i++){if(CREDS[i].u===uh&&CREDS[i].p===ph){ok=true;rbacMatch=CREDS[i];break}}
+  document.getElementById('loginBtnText').style.display='inline';
+  document.getElementById('loginSpinner').style.display='none';
+  if(ok){
+    sessionStorage.setItem('kphc_platform','true');
+    sessionStorage.setItem('kphc_platform_time',Date.now().toString());
+    if(rbacMatch){sessionStorage.setItem('kphc_rbac_role',rbacMatch.r||'admin');sessionStorage.setItem('kphc_rbac_name',rbacMatch.n||'Admin')}
+    startBootSequence();
+  }else{
+    attempts++;
+    if(attempts>=5){lockout=Date.now()+30000;showError('Too many attempts. Locked 30 seconds.');attempts=0}
+    else{showError('Invalid credentials.')}
+    document.getElementById('loginAttempts').style.display='block';
+    document.getElementById('attemptText').textContent=attempts+'/5 attempts';
+    document.getElementById('loginPass').value='';
+  }
+}
+function showError(msg){
+  var el=document.getElementById('loginError');
+  document.getElementById('loginErrorText').textContent=msg;
+  el.style.display='block';el.style.animation='headShake .5s ease';
+}
+
+/* ═══ BOOT SEQUENCE ═══ */
+function startBootSequence(){
+  document.getElementById('loginGate').classList.add('exit');
+  setTimeout(function(){
+    document.getElementById('loginGate').style.display='none';
+    var boot=document.getElementById('bootScreen');
+    boot.classList.add('active');
+    // Animate boot
+    var bar=document.getElementById('bootBar');
+    var status=document.getElementById('bootStatus');
+    var items=['bi0','bi1','bi2','bi3','bi4','bi5','bi6'];
+    var labels=['Authenticated','S3 Orders loaded','Denials loaded','Infusion loaded','Referral & Intake loaded','Command Center loaded','All systems operational'];
+    bar.style.width='15%';
+    var delay=0;
+    items.forEach(function(id,i){
+      delay+=280;
+      setTimeout(function(){
+        document.getElementById(id).classList.add('on');
+        bar.style.width=((i+1)/items.length*100)+'%';
+        status.textContent=labels[i];
+      },delay);
+    });
+    setTimeout(function(){
+      boot.style.transition='opacity .8s';boot.style.opacity='0';
+      setTimeout(function(){
+        boot.style.display='none';
+        var platform=document.getElementById('platform');
+        platform.classList.add('active');
+        animateCounters();
+      },800);
+    },delay+600);
+  },1000);
+}
+
+/* ═══ SESSION RESTORE — Bridge from login.html sxa_* session ═══ */
+(function(){
+  var sxaRole = sessionStorage.getItem('sxa_role');
+  var sxaTime = sessionStorage.getItem('sxa_time');
+
+  // Check existing kphc session (backward compat)
+  var kphcOk = sessionStorage.getItem('kphc_platform')==='true';
+  if(kphcOk){
+    var t=parseInt(sessionStorage.getItem('kphc_platform_time')||'0');
+    if(Date.now()-t<8*3600000){
+      document.getElementById('loginGate').style.display='none';
+      document.getElementById('platform').classList.add('active');
+      document.getElementById('platform').style.opacity='1';
+      setTimeout(animateCounters,200);
+      setTimeout(function(){if(typeof rbacApplyFilter==='function')rbacApplyFilter()},300);
+      return;
+    }
+    sessionStorage.removeItem('kphc_platform');
+  }
+
+  // Bridge from new login page
+  if(sxaRole && sxaTime){
+    var loginAge = Date.now() - new Date(sxaTime).getTime();
+    if(loginAge < 8*3600000){ // 8 hour session
+      // Map sxa roles to kphc roles
+      var roleMap = {admin:'admin',executive:'exec_viewer',rcm:'rcm',s3:'s3',denials:'denials',infusion:'infusion',ri:'ri'};
+      var nameMap = {admin:'Platform Admin',executive:'KPHC Executive',rcm:'RCM Command Center',s3:'S3 Orders Team',denials:'Denials Team',infusion:'Infusion Team',ri:'Referral & Intake Team'};
+      var mappedRole = roleMap[sxaRole] || 'admin';
+      var mappedName = nameMap[sxaRole] || sessionStorage.getItem('sxa_label') || 'User';
+
+      // Set kphc session keys so the rest of the portal works
+      sessionStorage.setItem('kphc_platform','true');
+      sessionStorage.setItem('kphc_platform_time',Date.now().toString());
+      sessionStorage.setItem('kphc_rbac_role', mappedRole);
+      sessionStorage.setItem('kphc_rbac_name', mappedName);
+
+      // Skip login gate, skip boot, go straight to platform
+      document.getElementById('loginGate').style.display='none';
+      document.getElementById('platform').classList.add('active');
+      document.getElementById('platform').style.opacity='1';
+      setTimeout(animateCounters,200);
+      setTimeout(function(){if(typeof rbacApplyFilter==='function')rbacApplyFilter()},300);
+      return;
+    }
+  }
+
+  // No valid session — redirect to login page
+  window.location.href = 'login.html';
+})();
+
+/* ═══ DASHBOARD VIEWER ═══ */
+function openDash(slug,title){
+  document.getElementById('viewerTitle').textContent=title;
+  document.getElementById('viewerFrame').src='./'+slug+'/index.html';
+  document.getElementById('dashViewer').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeDash(){
+  document.getElementById('dashViewer').classList.remove('active');
+  document.getElementById('viewerFrame').src='';
+  document.body.style.overflow='';
+}
+
+/* ═══ LOGOUT ═══ */
+function logout(){
+  sessionStorage.removeItem('kphc_platform');
+  sessionStorage.removeItem('kphc_platform_time');
+  sessionStorage.removeItem('kphc_rbac_role');sessionStorage.removeItem('kphc_rbac_name');
+  sessionStorage.removeItem('sxa_user');sessionStorage.removeItem('sxa_role');
+  sessionStorage.removeItem('sxa_label');sessionStorage.removeItem('sxa_access');
+  sessionStorage.removeItem('sxa_session');sessionStorage.removeItem('sxa_time');
+  window.location.href = 'login.html';
+}
+
+/* ═══ 3D CARD TILT ═══ */
+document.querySelectorAll('.suite-card').forEach(function(card){
+  card.addEventListener('mousemove',function(e){
+    var rect=card.getBoundingClientRect();
+    var x=(e.clientX-rect.left)/rect.width;
+    var y=(e.clientY-rect.top)/rect.height;
+    var tiltX=(y-.5)*8;
+    var tiltY=(x-.5)*-8;
+    card.style.transform='translateY(-8px) scale(1.015) perspective(1000px) rotateX('+tiltX+'deg) rotateY('+tiltY+'deg)';
+  });
+  card.addEventListener('mouseleave',function(){
+    card.style.transform='';
+  });
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PLATFORM RBAC — Sixapart Healthcare · v1.0 · Additive-Only           -->
+<!-- Controls which sub-dashboards each user role can access               -->
+<!-- TO REMOVE: Delete everything between PLATFORM-RBAC START / END       -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- ═══ PLATFORM-RBAC START ═══ -->
+<style id="platform-rbac-styles">
+/* ═══ RBAC SESSION BAR — Light Mode ═══ */
+.rbac-bar{position:fixed;bottom:0;left:0;right:0;z-index:9998;background:rgba(255,255,255,.92);backdrop-filter:blur(24px);border-top:1px solid rgba(0,0,0,.08);padding:10px 28px;display:none;align-items:center;justify-content:space-between;font-family:'DM Sans',sans-serif;box-shadow:0 -4px 24px rgba(0,0,0,.04)}
+.rbac-bar.on{display:flex}
+.rbac-bar-left{display:flex;align-items:center;gap:14px}
+.rbac-bar-dot{width:8px;height:8px;border-radius:50%;background:#0d9488;box-shadow:0 0 8px rgba(13,148,136,.4);animation:rbPulse 2.5s ease-in-out infinite}
+@keyframes rbPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.rbac-bar-user{font-size:.8rem;color:#111827;font-weight:600;letter-spacing:-.2px}
+.rbac-bar-role{font-size:.62rem;color:#4b5563;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.12);border-radius:8px}
+.rbac-bar-right{display:flex;gap:10px;align-items:center}
+.rbac-bar-btn{padding:7px 16px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .3s;border:1px solid}
+.rbac-btn-manage{background:rgba(13,148,136,.05);border-color:rgba(13,148,136,.15);color:#0d9488}
+.rbac-btn-manage:hover{background:rgba(13,148,136,.12);border-color:rgba(13,148,136,.25);transform:translateY(-1px)}
+.rbac-btn-signout{background:rgba(220,38,38,.04);border-color:rgba(220,38,38,.12);color:#dc2626}
+.rbac-btn-signout:hover{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.2)}
+
+/* ═══ ACCESS DENIED OVERLAY ═══ */
+.rbac-denied-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(244,246,251,.94);backdrop-filter:blur(20px);align-items:center;justify-content:center;flex-direction:column;gap:18px;font-family:'DM Sans',sans-serif;animation:rbFadeIn .3s ease}
+.rbac-denied-overlay.on{display:flex}
+@keyframes rbFadeIn{from{opacity:0}to{opacity:1}}
+.rbac-denied-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,rgba(220,38,38,.08),rgba(220,38,38,.04));border:1px solid rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center;font-size:2rem}
+.rbac-denied-title{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;color:#111827;letter-spacing:-.3px}
+.rbac-denied-text{font-size:.82rem;color:#6b7280;max-width:340px;text-align:center;line-height:1.7}
+.rbac-denied-btn{padding:11px 32px;border-radius:12px;background:linear-gradient(135deg,#0d9488,#0891b2);border:none;color:white;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(13,148,136,.2)}
+.rbac-denied-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(13,148,136,.3)}
+
+/* ═══ ADMIN PANEL — Light Mode ═══ */
+#rbac-admin-panel{position:fixed;inset:0;z-index:10002;background:rgba(244,246,251,.88);backdrop-filter:blur(28px);display:none;align-items:center;justify-content:center;animation:rbFadeIn .3s ease}
+#rbac-admin-panel.on{display:flex}
+.rbac-admin-box{width:820px;max-width:94vw;max-height:88vh;overflow-y:auto;background:#ffffff;border-radius:28px;padding:44px;box-shadow:0 20px 60px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06)}
+.rbac-admin-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(0,0,0,.06)}
+.rbac-admin-h{font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;color:#111827;letter-spacing:-.4px;display:flex;align-items:center;gap:10px}
+.rbac-admin-desc{font-size:.75rem;color:#6b7280;margin-top:6px;font-family:'DM Sans',sans-serif;line-height:1.6}
+.rbac-admin-x{width:38px;height:38px;border-radius:12px;background:#f4f6fb;border:1px solid rgba(0,0,0,.06);color:#6b7280;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .3s;flex-shrink:0}
+.rbac-admin-x:hover{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.12);color:#dc2626}
+
+/* ═══ USER TABLE ═══ */
+.rbtbl{width:100%;border-collapse:separate;border-spacing:0;margin-bottom:28px}
+.rbtbl th{font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#9ca3af;padding:12px 16px;text-align:left;border-bottom:2px solid rgba(0,0,0,.05);background:#f9fafb}
+.rbtbl th:first-child{border-radius:12px 0 0 0}.rbtbl th:last-child{border-radius:0 12px 0 0}
+.rbtbl td{font-size:.82rem;padding:14px 16px;color:#374151;border-bottom:1px solid rgba(0,0,0,.04);font-family:'DM Sans',sans-serif;vertical-align:middle}
+.rbtbl tr:hover td{background:rgba(13,148,136,.02)}
+.rbtbl .mono{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#4b5563}
+.rbtbl .pwd-cell{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#9ca3af;display:flex;align-items:center;gap:8px}
+.rbtbl .pwd-toggle{width:24px;height:24px;border-radius:6px;background:#f4f6fb;border:1px solid rgba(0,0,0,.06);color:#6b7280;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:.6rem;transition:all .2s}
+.rbtbl .pwd-toggle:hover{background:rgba(13,148,136,.06);border-color:rgba(13,148,136,.12);color:#0d9488}
+
+/* ═══ ROLE CHIPS ═══ */
+.rb-chip{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.64rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.rb-chip-admin{background:linear-gradient(135deg,rgba(13,148,136,.08),rgba(8,145,178,.06));color:#0d9488;border:1px solid rgba(13,148,136,.12)}
+.rb-chip-rcm{background:rgba(124,58,237,.06);color:#7c3aed;border:1px solid rgba(124,58,237,.1)}
+.rb-chip-s3{background:rgba(8,145,178,.06);color:#0891b2;border:1px solid rgba(8,145,178,.1)}
+.rb-chip-denials{background:rgba(220,38,38,.05);color:#dc2626;border:1px solid rgba(220,38,38,.08)}
+.rb-chip-infusion{background:rgba(219,39,119,.06);color:#db2777;border:1px solid rgba(219,39,119,.1)}
+.rb-chip-ri{background:rgba(202,138,4,.06);color:#ca8a04;border:1px solid rgba(202,138,4,.1)}
+.rb-chip-exec_viewer{background:linear-gradient(135deg,rgba(79,70,229,.06),rgba(13,148,136,.04));color:#4f46e5;border:1px solid rgba(79,70,229,.1)}
+
+.rb-pages-col{font-size:.68rem;color:#6b7280;font-family:'JetBrains Mono',monospace;line-height:1.7}
+.rb-del{width:30px;height:30px;border-radius:8px;background:rgba(220,38,38,.04);border:1px solid rgba(220,38,38,.08);color:#dc2626;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:.78rem;transition:all .3s}
+.rb-del:hover{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.18)}
+
+/* ═══ ADD USER SECTION ═══ */
+.rb-add{background:#f9fafb;border:1px solid rgba(0,0,0,.06);border-radius:20px;padding:24px 28px;margin-top:12px}
+.rb-add-title{font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:700;color:#111827;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.rb-add-title::before{content:'';width:4px;height:18px;border-radius:2px;background:linear-gradient(to bottom,#0d9488,#0891b2)}
+.rb-add-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
+.rb-add-grid .rbf{margin:0}
+.rbf label{display:block;font-size:.6rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;font-family:'DM Sans',sans-serif}
+.rbf input,.rbf select{width:100%;padding:11px 14px;background:#ffffff;border:1px solid rgba(0,0,0,.1);border-radius:11px;color:#111827;font-size:.8rem;outline:none;box-sizing:border-box;font-family:'DM Sans',sans-serif;transition:all .3s}
+.rbf input:focus,.rbf select:focus{border-color:rgba(13,148,136,.4);box-shadow:0 0 0 3px rgba(13,148,136,.06)}
+.rbf input::placeholder{color:#9ca3af}
+.rbf select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.rbf select option{background:#fff;color:#111827}
+.rb-add-btn{padding:11px 22px;background:linear-gradient(135deg,#0d9488,#0891b2);border:none;border-radius:11px;color:white;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .3s;font-family:'Outfit',sans-serif;box-shadow:0 4px 16px rgba(13,148,136,.2)}
+.rb-add-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,.3)}
+
+/* ═══ STATS ROW ═══ */
+.rb-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.rb-stat-card{background:#f9fafb;border:1px solid rgba(0,0,0,.05);border-radius:14px;padding:16px 20px;text-align:center}
+.rb-stat-val{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:#111827}
+.rb-stat-label{font-family:'DM Sans',sans-serif;font-size:.65rem;color:#6b7280;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+
+.suite-card.rbac-hidden{display:none !important}
+@media(max-width:700px){.rb-add-grid{grid-template-columns:1fr 1fr;gap:8px}.rbac-admin-box{padding:28px 20px}}
+</style>
+
+<div class="rbac-bar" id="rbac-bar">
+<div class="rbac-bar-left"><div class="rbac-bar-dot"></div><span class="rbac-bar-user" id="rb-bar-user"></span><span class="rbac-bar-role" id="rb-bar-role"></span></div>
+<div class="rbac-bar-right"><button class="rbac-bar-btn rbac-btn-manage" id="rb-manage-btn" style="display:none" onclick="rbacOpenAdmin()">⚙ Manage Users & Roles</button><button class="rbac-bar-btn rbac-btn-signout" onclick="logout()">⏻ Sign Out</button></div>
+</div>
+
+<div class="rbac-denied-overlay" id="rbac-denied">
+<div class="rbac-denied-icon">🔒</div>
+<div class="rbac-denied-title">Access Restricted</div>
+<div class="rbac-denied-text" id="rbac-denied-text">Your role does not have permission to access this dashboard. Contact your administrator for access.</div>
+<button class="rbac-denied-btn" onclick="document.getElementById('rbac-denied').classList.remove('on')">Return to Platform</button>
+</div>
+
+<div id="rbac-admin-panel">
+<div class="rbac-admin-box">
+<div class="rbac-admin-head">
+<div><div class="rbac-admin-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> User & Role Management</div>
+<div class="rbac-admin-desc">Manage platform access credentials. All passwords are SHA-256 hashed. Changes within a session are stored temporarily.</div></div>
+<div class="rbac-admin-x" onclick="rbacCloseAdmin()">✕</div>
+</div>
+<div class="rb-stats" id="rb-stats"></div>
+<table class="rbtbl"><thead><tr><th>Username</th><th>Display Name</th><th>Password</th><th>Role</th><th>Dashboard Access</th><th></th></tr></thead><tbody id="rb-tbody"></tbody></table>
+<div class="rb-add">
+<div class="rb-add-title">Add New User</div>
+<div class="rb-add-grid">
+<div class="rbf"><label>Username</label><input type="text" id="rb-new-user" placeholder="e.g. john.doe"></div>
+<div class="rbf"><label>Display Name</label><input type="text" id="rb-new-name" placeholder="Full Name"></div>
+<div class="rbf"><label>Password</label><input type="text" id="rb-new-pass" placeholder="Strong password"></div>
+<div class="rbf"><label>Role</label><select id="rb-new-role"><option value="admin">Admin (All Dashboards)</option><option value="rcm">RCM Command Center</option><option value="s3">S3 Orders</option><option value="denials">Denials</option><option value="infusion">Infusion</option><option value="ri">Referral & Intake</option><option value="exec_viewer">Executive Viewer (All, No Admin)</option></select></div>
+<button class="rb-add-btn" onclick="rbacAddUser()">+ Add</button>
+</div>
+</div>
+</div>
+</div>
+
+<script id="platform-rbac-script">
+/* ═══════════════════════════════════════════════════════════════
+   PLATFORM RBAC ENGINE — Sixapart Healthcare
+   Dashboard-Level Access Control · Light Mode · v1.1
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── Role → Dashboard mapping ── */
+var RBAC_ROLES={
+  admin:    {label:'Administrator',         dashboards:['command-center','s3-orders','denials','infusion','referral-intake']},
+  rcm:      {label:'RCM Command Center',    dashboards:['command-center']},
+  s3:       {label:'S3 Orders',             dashboards:['s3-orders']},
+  denials:  {label:'Denials Intelligence',  dashboards:['denials']},
+  infusion: {label:'Infusion Intelligence', dashboards:['infusion']},
+  ri:       {label:'Referral & Intake',     dashboards:['referral-intake']},
+  exec_viewer:{label:'Executive Viewer',   dashboards:['command-center','s3-orders','denials','infusion','referral-intake']}
+};
+
+var SLUG_TO_LABEL={
+  'command-center':'RCM Command Center',
+  's3-orders':'S3 Orders Intelligence',
+  'denials':'Denials Intelligence Suite',
+  'infusion':'Infusion Intelligence Suite',
+  'referral-intake':'Referral & Intake Intelligence'
+};
+
+/* ── Master user registry with plaintext passwords for admin display ── */
+var MASTER_USERS=[
+  {user:'kphc',         pwd:'Sixapart2026!',    r:'admin',    n:'Platform Admin'},
+  {user:'rcm.user',     pwd:'RCM@KPHC2026',     r:'rcm',      n:'RCM Command Center'},
+  {user:'s3.user',      pwd:'S3@KPHC2026',      r:'s3',       n:'S3 Orders Team'},
+  {user:'denials.user', pwd:'Denials@KPHC2026',  r:'denials',  n:'Denials Team'},
+  {user:'infusion.user',pwd:'Infusion@KPHC2026', r:'infusion', n:'Infusion Team'},
+  {user:'ri.user',      pwd:'RI@KPHC2026',       r:'ri',       n:'Referral & Intake Team'},
+  {user:'kphc.executive',pwd:'Kennebec@2026',    r:'exec_viewer',n:'KPHC Executive'}
+];
+
+/* ── Helpers ── */
+function getRole(){return sessionStorage.getItem('kphc_rbac_role')||'admin'}
+function getName(){return sessionStorage.getItem('kphc_rbac_name')||'Platform Admin'}
+function getAllowed(){var r=RBAC_ROLES[getRole()];return r?r.dashboards:RBAC_ROLES.admin.dashboards}
+
+/* ── Core filtering ── */
+window.rbacApplyFilter=function(){
+  var role=getRole();
+  var allowed=getAllowed();
+
+  document.querySelectorAll('.suite-card').forEach(function(card){
+    var onclick=card.getAttribute('onclick')||'';
+    var m=onclick.match(/openDash\('([^']+)'/);
+    if(!m)return;
+    if(allowed.indexOf(m[1])===-1){card.classList.add('rbac-hidden')}
+    else{card.classList.remove('rbac-hidden')}
+  });
+
+  document.getElementById('rb-bar-user').textContent=getName();
+  var roleObj=RBAC_ROLES[role];
+  document.getElementById('rb-bar-role').textContent=roleObj?roleObj.label:'Unknown';
+  document.getElementById('rbac-bar').classList.add('on');
+  if(role==='admin'){document.getElementById('rb-manage-btn').style.display=''}
+  document.body.style.paddingBottom='52px';
+};
+
+/* ── Wrap openDash for access control ── */
+var _originalOpenDash=window.openDash;
+window.openDash=function(slug,title){
+  var allowed=getAllowed();
+  if(allowed.indexOf(slug)===-1){
+    document.getElementById('rbac-denied-text').textContent=
+      'Your role ('+getName()+') does not have permission to access "'+title+'". Contact your platform administrator for access.';
+    document.getElementById('rbac-denied').classList.add('on');
+    return;
+  }
+  if(typeof _originalOpenDash==='function'){_originalOpenDash(slug,title)}
+};
+
+/* ── MutationObserver for boot sequence ── */
+var _rbacObs=new MutationObserver(function(muts){
+  muts.forEach(function(m){
+    if(m.type==='attributes'&&m.attributeName==='class'){
+      var el=document.getElementById('platform');
+      if(el&&el.classList.contains('active')){
+        setTimeout(rbacApplyFilter,100);
+        _rbacObs.disconnect();
+      }
+    }
+  });
+});
+var _pEl=document.getElementById('platform');
+if(_pEl&&!_pEl.classList.contains('active')){_rbacObs.observe(_pEl,{attributes:true,attributeFilter:['class']})}
+
+/* ── Admin Panel ── */
+window.rbacOpenAdmin=function(){rbacRenderTable();document.getElementById('rbac-admin-panel').classList.add('on')};
+window.rbacCloseAdmin=function(){document.getElementById('rbac-admin-panel').classList.remove('on')};
+
+function rbacGetUsers(){
+  try{var s=sessionStorage.getItem('rbac_platform_users');if(s){var parsed=JSON.parse(s);if(parsed&&parsed.length>0)return parsed}}catch(e){}
+  return JSON.parse(JSON.stringify(MASTER_USERS));
+}
+function rbacSaveUsers(arr){try{sessionStorage.setItem('rbac_platform_users',JSON.stringify(arr))}catch(e){}}
+
+function rbacRenderTable(){
+  var users=rbacGetUsers();
+  var tb=document.getElementById('rb-tbody');
+  var roleCount={};
+  users.forEach(function(u){roleCount[u.r]=(roleCount[u.r]||0)+1});
+
+  tb.innerHTML=users.map(function(u,i){
+    var rObj=RBAC_ROLES[u.r]||RBAC_ROLES.admin;
+    var chip='<span class="rb-chip rb-chip-'+u.r+'">'+rObj.label+'</span>';
+    var pages=rObj.dashboards.map(function(s){return SLUG_TO_LABEL[s]||s}).join('<br>');
+    var pwdDisplay=u.pwd?u.pwd:'••••••••';
+    var pwdCell='<div class="pwd-cell"><span id="pwd-'+i+'" style="filter:blur(4px);transition:filter .2s;user-select:none">'+pwdDisplay+'</span><div class="pwd-toggle" onclick="this.previousElementSibling.style.filter=this.previousElementSibling.style.filter?\'blur(0)\':\'blur(4px)\'" title="Toggle visibility">👁</div></div>';
+    var del=(u.user!=='kphc')?'<div class="rb-del" onclick="rbacDelUser('+i+')" title="Remove user">✕</div>':'<span style="font-size:.6rem;color:#9ca3af">Master</span>';
+    return '<tr><td class="mono">'+u.user+'</td><td>'+u.n+'</td><td>'+pwdCell+'</td><td>'+chip+'</td><td class="rb-pages-col">'+pages+'</td><td style="text-align:center">'+del+'</td></tr>';
+  }).join('');
+
+  /* Stats row */
+  var totalUsers=users.length;
+  var totalRoles=Object.keys(roleCount).length;
+  var totalDash=5;
+  document.getElementById('rb-stats').innerHTML=
+    '<div class="rb-stat-card"><div class="rb-stat-val">'+totalUsers+'</div><div class="rb-stat-label">Total Users</div></div>'+
+    '<div class="rb-stat-card"><div class="rb-stat-val">'+totalRoles+'</div><div class="rb-stat-label">Active Roles</div></div>'+
+    '<div class="rb-stat-card"><div class="rb-stat-val">'+totalDash+'</div><div class="rb-stat-label">Dashboards</div></div>';
+}
+
+window.rbacDelUser=function(idx){
+  var users=rbacGetUsers();
+  if(users[idx]&&users[idx].user==='kphc')return;
+  users.splice(idx,1);
+  rbacSaveUsers(users);
+  rbacRenderTable();
+};
+
+window.rbacAddUser=function(){
+  var uEl=document.getElementById('rb-new-user');
+  var nEl=document.getElementById('rb-new-name');
+  var pEl=document.getElementById('rb-new-pass');
+  var rEl=document.getElementById('rb-new-role');
+  var u=uEl.value.trim().toLowerCase(),nm=nEl.value.trim(),p=pEl.value,r=rEl.value;
+  if(!u||!nm||!p){alert('All fields are required.');return}
+  var users=rbacGetUsers();
+  for(var i=0;i<users.length;i++){if(users[i].user===u){alert('Username "'+u+'" already exists.');return}}
+  /* Add to runtime CREDS for immediate login */
+  sha256(u).then(function(uh){
+    sha256(p).then(function(ph){
+      CREDS.push({u:uh,p:ph,r:r,n:nm});
+      users.push({user:u,pwd:p,r:r,n:nm});
+      rbacSaveUsers(users);
+      uEl.value='';nEl.value='';pEl.value='';
+      rbacRenderTable();
+    });
+  });
+};
+
+})();
+</script>
+<!-- ═══ PLATFORM-RBAC END ═══ -->
+<!-- ═══ PREMIUM-POLISH START ═══ -->
+<style id="kphc-premium-polish">
+/* ═══════════════════════════════════════════════════════════════
+   KPHC Revenue Cycle Intelligence Platform — Premium Polish v2
+   Visual refinement layer · Additive-only · Pure CSS overrides
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ── Premium Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.08);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.16)}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08)}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.16)}
+*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.08) transparent}
+
+
+/* ── Text Selection ── */
+::selection{background:rgba(13,148,136,.12);color:inherit}
+
+
+/* ── Focus Rings ── */
+:focus-visible{outline:2px solid rgba(13,148,136,.4);outline-offset:2px;border-radius:inherit}
+
+
+/* ── Typography Refinement ── */
+.kpi-val,.sc-metric-val,.kpi-pill-val,[class*="metric"],[class*="stat"]{font-variant-numeric:tabular-nums !important}
+
+
+/* ══════════════════════════════════════════════
+   LOGIN GATE — Premium Executive Experience
+   ══════════════════════════════════════════════ */
+#loginGate{transition:all 1.2s cubic-bezier(.4,0,.2,1)}
+
+/* Logo ring — enhanced depth */
+.login-logo-ring{box-shadow:0 8px 32px rgba(78,205,196,.1),0 20px 60px rgba(124,58,237,.06)}
+.login-logo-inner{transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.login-logo-inner:hover{transform:scale(1.04) rotate(2deg)}
+.login-logo-inner svg{filter:drop-shadow(0 3px 12px rgba(78,205,196,.25))}
+
+/* Login card — enterprise glassmorphism */
+.login-card{
+  box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),0 24px 64px rgba(0,0,0,.06);
+  transition:box-shadow .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1) !important}
+.login-card:hover{
+  box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.05),0 32px 80px rgba(0,0,0,.07);
+  transform:translateY(-2px)}
+.login-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(78,205,196,.15),rgba(124,58,237,.1),transparent);border-radius:24px 24px 0 0}
+
+/* Card head accent */
+.login-card-head{transition:all .3s}
+.login-card-head span{letter-spacing:2.5px !important}
+
+/* Input fields — refined focus states */
+.login-input{transition:all .3s cubic-bezier(.4,0,.2,1) !important;font-size:14.5px !important}
+.login-input:focus{
+  border-color:rgba(13,148,136,.35) !important;
+  box-shadow:0 0 0 3px rgba(13,148,136,.06),0 2px 12px rgba(13,148,136,.04) !important;
+  background:rgba(0,0,0,.01) !important}
+.login-input::placeholder{transition:all .3s}
+.login-input:focus::placeholder{opacity:.5;transform:translateX(4px)}
+.login-input-wrap{transition:all .3s}
+.login-input-wrap svg{transition:all .3s !important}
+.login-input:focus ~ svg,.login-field:focus-within .login-input-wrap svg{stroke:#0d9488 !important;opacity:1}
+
+/* Labels — subtle animation */
+.login-label{transition:all .3s !important;font-size:10.5px !important}
+.login-field:focus-within .login-label{color:#0d9488 !important}
+
+/* Login button — premium with depth */
+.login-btn{
+  box-shadow:0 2px 8px rgba(13,148,136,.15),0 8px 28px rgba(13,148,136,.12);
+  transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+  font-size:15.5px !important;letter-spacing:.2px !important;
+  position:relative;overflow:hidden}
+.login-btn:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:0 4px 16px rgba(13,148,136,.2),0 12px 40px rgba(13,148,136,.15) !important;
+  letter-spacing:.4px !important}
+.login-btn:active{transform:translateY(0) !important;box-shadow:0 2px 8px rgba(13,148,136,.12) !important}
+.login-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);pointer-events:none}
+
+/* HIPAA badge */
+.login-hipaa{
+  box-shadow:0 1px 8px rgba(78,205,196,.04);transition:all .3s cubic-bezier(.4,0,.2,1)}
+.login-hipaa:hover{transform:translateY(-1px);box-shadow:0 2px 16px rgba(78,205,196,.08)}
+
+/* Brands */
+.login-brand-1,.login-brand-2{transition:all .3s;letter-spacing:2.5px !important}
+.login-subtitle{letter-spacing:.3px !important}
+
+/* Footer */
+.login-footer{transition:opacity .4s;letter-spacing:.5px !important}
+
+/* ══════════════════════════════════════════════
+   BOOT SCREEN — Polished Loading
+   ══════════════════════════════════════════════ */
+#bootScreen{backdrop-filter:blur(16px)}
+.boot-logo{filter:drop-shadow(0 4px 20px rgba(13,148,136,.12));letter-spacing:-.8px !important}
+.boot-item{transition:all .4s cubic-bezier(.4,0,.2,1) !important;letter-spacing:.8px !important}
+.boot-item.on{transform:translateX(4px)}
+.boot-item.on .check{text-shadow:0 0 10px rgba(13,148,136,.4)}
+.boot-progress{border-radius:24px !important;overflow:hidden}
+
+/* ══════════════════════════════════════════════
+   TOPBAR — Refined Executive Bar
+   ══════════════════════════════════════════════ */
+
+/* ── Topbar Premium ── */
+.topbar{box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 16px rgba(0,0,0,.015) !important;transition:all .3s !important}
+
+.topbar::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.03),transparent)}
+.topbar-title{letter-spacing:-.4px !important;font-weight:800 !important}
+.topbar-sub{letter-spacing:.8px !important}
+.tb-hipaa{transition:all .3s;border-radius:10px !important}
+.tb-hipaa:hover{transform:scale(1.02)}
+.tb-clock{font-variant-numeric:tabular-nums !important}
+.logout-btn{transition:all .3s cubic-bezier(.4,0,.2,1) !important;border-radius:11px !important}
+.logout-btn:hover{transform:translateY(-1px) !important;box-shadow:0 3px 12px rgba(220,38,38,.06) !important}
+
+/* ══════════════════════════════════════════════
+   KPI RIBBON — High-Impact Metrics Bar
+   ══════════════════════════════════════════════ */
+.kpi-ribbon{gap:16px !important}
+.kpi-pill{
+  box-shadow:0 1px 2px rgba(0,0,0,.03),0 2px 10px rgba(0,0,0,.025),0 6px 24px rgba(0,0,0,.015);
+  transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+  padding:12px 24px !important}
+.kpi-pill:hover{
+  transform:translateY(-3px);
+  box-shadow:0 2px 4px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.04),0 14px 40px rgba(0,0,0,.03)}
+.kpi-pill-val{font-size:15px !important;font-weight:900 !important;letter-spacing:-.3px !important}
+.kpi-pill-label{font-size:10px !important;letter-spacing:1.2px !important}
+.kpi-dot{
+  box-shadow:0 0 0 3px rgba(0,0,0,.02),0 0 8px currentColor;
+  transition:all .3s !important;width:8px !important;height:8px !important}
+.kpi-pill:hover .kpi-dot{box-shadow:0 0 0 4px rgba(0,0,0,.02),0 0 14px currentColor}
+
+/* ══════════════════════════════════════════════
+   SUITE CARDS — Enterprise Dashboard Tiles
+   ══════════════════════════════════════════════ */
+.suites-section{margin-top:16px !important}
+.suites-label{letter-spacing:3px !important;font-size:10px !important;font-weight:700 !important;opacity:.5;transition:opacity .4s}
+.suites-section:hover .suites-label{opacity:.7}
+.suites-grid{gap:22px !important}
+.suite-card{border-radius:26px !important}
+
+/* Card inner — layered depth */
+.sc-inner{
+  box-shadow:0 1px 2px rgba(0,0,0,.025),0 3px 10px rgba(0,0,0,.02),0 10px 36px rgba(0,0,0,.025) !important;
+  border-radius:26px !important;padding:36px 32px !important;
+  transition:all .5s cubic-bezier(.4,0,.2,1) !important}
+.suite-card:hover .sc-inner{
+  box-shadow:0 1px 2px rgba(0,0,0,.03),0 6px 20px rgba(0,0,0,.04),0 24px 56px rgba(0,0,0,.05) !important;
+  border-color:var(--border2) !important}
+
+/* Icon — depth + scale */
+.sc-icon{border-radius:16px !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.04);
+  transition:all .5s cubic-bezier(.4,0,.2,1) !important}
+.suite-card:hover .sc-icon{transform:scale(1.06);box-shadow:0 4px 12px rgba(0,0,0,.06),0 10px 28px rgba(0,0,0,.06)}
+
+/* Title / description */
+.sc-title{transition:all .35s !important;letter-spacing:-.3px !important}
+.sc-desc{line-height:1.65 !important;font-size:13px !important;letter-spacing:.1px !important}
+
+/* Badge */
+.sc-badge{box-shadow:0 1px 6px rgba(0,0,0,.04);font-variant-numeric:tabular-nums;letter-spacing:.5px !important;transition:all .3s}
+.suite-card:hover .sc-badge{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+
+/* Metrics grid */
+.sc-metrics{gap:16px !important;margin-top:20px !important}
+.sc-metric-val{font-size:17px !important;font-weight:900 !important;letter-spacing:-.4px !important;transition:all .3s}
+.suite-card:hover .sc-metric-val{transform:scale(1.02)}
+.sc-metric-lbl{font-size:9px !important;letter-spacing:1.8px !important;text-transform:uppercase !important;font-weight:600 !important;opacity:.55}
+.sc-freq{letter-spacing:1px !important}
+
+/* Arrow indicator */
+.sc-arrow{transition:all .4s cubic-bezier(.4,0,.2,1) !important}
+.suite-card:hover .sc-arrow{transform:translateX(4px)}
+
+/* ══════════════════════════════════════════════
+   DASHBOARD VIEWER — Immersive Frame
+   ══════════════════════════════════════════════ */
+.viewer-bar{
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 16px rgba(0,0,0,.02) !important}
+.viewer-bar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04),transparent)}
+#viewerTitle{font-weight:800 !important;letter-spacing:-.3px !important}
+.viewer-back svg{transition:transform .3s}.viewer-back:hover svg{transform:translateX(-3px)}
+.viewer-frame{border:none !important}
+
+/* ══════════════════════════════════════════════
+   RBAC ADMIN — Executive Panel Polish
+   ══════════════════════════════════════════════ */
+.rbac-bar{transition:all .3s !important}
+.rbac-admin-box{box-shadow:0 4px 16px rgba(0,0,0,.04),0 24px 64px rgba(0,0,0,.08) !important;border-radius:28px !important}
+.rbac-admin-h{letter-spacing:-.3px !important}
+.rb-stat-card{
+  border-radius:16px !important;transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+  box-shadow:0 1px 4px rgba(0,0,0,.02) !important;position:relative;overflow:hidden}
+.rb-stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.04) !important}
+.rb-stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0d9488,#0891b2);opacity:.3;border-radius:16px 16px 0 0}
+.rb-stat-val{font-weight:900 !important;letter-spacing:-.5px !important}
+.rbtbl{border-radius:16px !important;overflow:hidden;border:1px solid rgba(0,0,0,.04)}
+.rbtbl th{font-size:.6rem !important;padding:13px 16px !important;letter-spacing:2px !important}
+.rbtbl td{padding:15px 16px !important}
+.rbtbl tr:hover td{background:rgba(13,148,136,.015) !important}
+.rb-chip{box-shadow:0 1px 3px rgba(0,0,0,.02);transition:all .3s}
+.rb-add{border-radius:20px !important}
+.rb-add-btn{box-shadow:0 2px 10px rgba(13,148,136,.15);transition:all .4s cubic-bezier(.4,0,.2,1) !important}
+.rb-add-btn:hover{transform:translateY(-2px) !important;box-shadow:0 6px 24px rgba(13,148,136,.2) !important}
+.rbf input,.rbf select{border-radius:11px !important;transition:all .3s cubic-bezier(.4,0,.2,1) !important}
+.rbf input:focus,.rbf select:focus{
+  border-color:rgba(13,148,136,.35) !important;
+  box-shadow:0 0 0 3px rgba(13,148,136,.06),0 2px 12px rgba(13,148,136,.03) !important}
+
+/* ══════════════════════════════════════════════
+   FOOTER — Refined
+   ══════════════════════════════════════════════ */
+.platform-footer{letter-spacing:1.8px !important;font-size:9px !important;opacity:.4;transition:opacity .3s}
+.platform-footer:hover{opacity:.6}
+
+/* ══════════════════════════════════════════════
+   SMOOTH PAGE TRANSITIONS
+   ══════════════════════════════════════════════ */
+#platform{transition:opacity .8s cubic-bezier(.4,0,.2,1)}
+.main{transition:opacity .3s}
+</style>
+<!-- ═══ PREMIUM-POLISH END ═══ -->
+<!-- ═══ THEME-SYSTEM START ═══ -->
+<style id="kphc-theme-overrides">
+/* ── Portal Dark Mode: CSS Variable Overrides ── */
+[data-theme="dark"]{
+  --bg:#0f1219;--bg2:#161b28;
+  --card:rgba(22,27,40,.95);
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+  --t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--t4:#475569;
+}
+
+/* ── Login Gate ── */
+[data-theme="dark"] #loginGate{background:#0f1219}
+[data-theme="dark"] .login-logo-ring::after{background:#0f1219}
+[data-theme="dark"] .login-logo-inner{background:linear-gradient(135deg,rgba(78,205,196,.2),rgba(168,85,247,.15))}
+[data-theme="dark"] .login-card{background:rgba(22,27,40,.95);border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .login-card-head{border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .login-input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.07);color:#e2e8f0}
+[data-theme="dark"] .login-input::placeholder{color:#475569}
+[data-theme="dark"] .login-input:focus{border-color:rgba(13,148,136,.5);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
+[data-theme="dark"] .login-input-wrap svg{stroke:#64748b}
+[data-theme="dark"] .login-label{color:#94a3b8}
+[data-theme="dark"] .pass-toggle svg{stroke:#64748b}
+[data-theme="dark"] .login-hipaa{background:rgba(78,205,196,.06);border-color:rgba(78,205,196,.15)}
+[data-theme="dark"] .login-footer{color:#475569}
+[data-theme="dark"] .login-attempts{color:#64748b}
+[data-theme="dark"] #loginError{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#fca5a5}
+
+/* ── Boot Screen ── */
+[data-theme="dark"] #bootScreen{background:#0f1219}
+[data-theme="dark"] .boot-item{color:#64748b}
+[data-theme="dark"] .boot-item.on{color:#e2e8f0}
+
+/* ── Platform (Post-Login) ── */
+[data-theme="dark"] .topbar{background:rgba(22,27,40,.92);border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .topbar-title{color:#e2e8f0}
+[data-theme="dark"] .topbar-sub{color:#64748b}
+[data-theme="dark"] .logout-btn{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07);color:#94a3b8}
+[data-theme="dark"] .logout-btn:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#fca5a5}
+[data-theme="dark"] .kpi-pill{background:rgba(22,27,40,.95);border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .kpi-pill-label{color:#64748b}
+[data-theme="dark"] .suites-label{color:#64748b}
+[data-theme="dark"] .sc-inner{background:rgba(22,27,40,.95);border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .sc-inner:hover{border-color:rgba(255,255,255,.14)}
+[data-theme="dark"] .sc-title{color:#e2e8f0}
+[data-theme="dark"] .sc-desc{color:#64748b}
+[data-theme="dark"] .sc-metric-val{color:#e2e8f0}
+[data-theme="dark"] .sc-metric-lbl{color:#64748b}
+[data-theme="dark"] .platform-footer{color:#475569}
+
+/* ── Dashboard Viewer ── */
+[data-theme="dark"] .viewer-bar{background:rgba(22,27,40,.92);border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] #viewerTitle{color:#e2e8f0}
+[data-theme="dark"] .dash-btn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.07);color:#94a3b8}
+[data-theme="dark"] .dash-btn:hover{background:rgba(255,255,255,.1);color:#e2e8f0}
+
+/* ── RBAC Bar + Admin (override light-mode RBAC styles) ── */
+[data-theme="dark"] .rbac-bar{background:rgba(22,27,40,.92);border-color:rgba(255,255,255,.07);box-shadow:0 -4px 24px rgba(0,0,0,.3)}
+[data-theme="dark"] .rbac-bar-user{color:#e2e8f0}
+[data-theme="dark"] .rbac-bar-role{color:#94a3b8;background:rgba(13,148,136,.1);border-color:rgba(13,148,136,.15)}
+[data-theme="dark"] .rbac-btn-manage{background:rgba(13,148,136,.1);border-color:rgba(13,148,136,.18);color:#2dd4bf}
+[data-theme="dark"] .rbac-btn-signout{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.15);color:#fca5a5}
+[data-theme="dark"] .rbac-denied-overlay{background:rgba(15,18,25,.94)}
+[data-theme="dark"] .rbac-denied-title{color:#e2e8f0}
+[data-theme="dark"] .rbac-denied-text{color:#94a3b8}
+[data-theme="dark"] #rbac-admin-panel{background:rgba(15,18,25,.92)}
+[data-theme="dark"] .rbac-admin-box{background:#161b28;border-color:rgba(255,255,255,.07);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+[data-theme="dark"] .rbac-admin-head{border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .rbac-admin-h{color:#e2e8f0}
+[data-theme="dark"] .rbac-admin-desc{color:#64748b}
+[data-theme="dark"] .rbac-admin-x{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07);color:#64748b}
+[data-theme="dark"] .rbtbl th{background:#1c2235;color:#64748b;border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .rbtbl td{color:#94a3b8;border-color:rgba(255,255,255,.03)}
+[data-theme="dark"] .rbtbl tr:hover td{background:rgba(13,148,136,.04)}
+[data-theme="dark"] .rbtbl .mono{color:#94a3b8}
+[data-theme="dark"] .rb-stat-card{background:#1c2235;border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .rb-stat-val{color:#e2e8f0}
+[data-theme="dark"] .rb-stat-label{color:#64748b}
+[data-theme="dark"] .rb-add{background:#1c2235;border-color:rgba(255,255,255,.07)}
+[data-theme="dark"] .rb-add-title{color:#e2e8f0}
+[data-theme="dark"] .rbf label{color:#64748b}
+[data-theme="dark"] .rbf input,[data-theme="dark"] .rbf select{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07);color:#e2e8f0}
+[data-theme="dark"] .rbf input::placeholder{color:#475569}
+
+/* ── Theme Toggle ── */
+.kphc-theme-toggle{position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.kphc-theme-track{width:48px;height:26px;border-radius:13px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.06);position:relative;transition:all .4s cubic-bezier(.4,0,.2,1)}
+[data-theme="dark"] .kphc-theme-track{background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.2)}
+.kphc-theme-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:all .4s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:11px}
+[data-theme="dark"] .kphc-theme-knob{left:24px;background:#0d9488;box-shadow:0 2px 8px rgba(13,148,136,.3)}
+.kphc-theme-label{font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;color:var(--t3,#6b7280);letter-spacing:.5px;text-transform:uppercase}
+[data-theme="dark"] .kphc-theme-label{color:#64748b}
+
+/* Login gate toggle position */
+#theme-toggle-gate{position:fixed;top:20px;right:24px;z-index:10001;opacity:0;animation:themeToggleFadeIn .6s ease 1s forwards}
+@keyframes themeToggleFadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Platform toggle position */
+#theme-toggle-platform{display:none;align-items:center}
+#theme-toggle-platform .kphc-theme-toggle{margin-right:12px}
+</style>
+
+<!-- Theme Toggle on Login Gate -->
+<div id="theme-toggle-gate" style="display:none">
+<div class="kphc-theme-toggle" onclick="kphcToggleTheme()">
+<span class="kphc-theme-label" id="theme-label-gate">Light</span>
+<div class="kphc-theme-track"><div class="kphc-theme-knob" id="theme-knob-gate">☀</div></div>
+</div>
+</div>
+
+<script id="kphc-theme-script">
+/* ═══════════════════════════════════════════════════════════════
+   KPHC THEME SYSTEM — Sixapart Healthcare
+   Light/Dark Mode · Additive-Only · v1.0
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+var STORAGE_KEY='kphc_theme';
+
+function getTheme(){try{return localStorage.getItem(STORAGE_KEY)||'light'}catch(e){return 'light'}}
+function setTheme(t){try{localStorage.setItem(STORAGE_KEY,t)}catch(e){}}
+
+function applyTheme(t){
+  if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}
+  else{document.documentElement.removeAttribute('data-theme')}
+  /* Update toggle labels */
+  var labels=document.querySelectorAll('.kphc-theme-label');
+  labels.forEach(function(l){l.textContent=t==='dark'?'Dark':'Light'});
+  var knobs=document.querySelectorAll('.kphc-theme-knob');
+  knobs.forEach(function(k){k.textContent=t==='dark'?'🌙':'☀'});
+  /* Propagate to iframe */
+  try{
+    var frame=document.getElementById('viewerFrame');
+    if(frame&&frame.contentWindow){frame.contentWindow.postMessage({type:'kphc-theme',theme:t},'*')}
+  }catch(e){}
+  setTheme(t);
+}
+
+window.kphcToggleTheme=function(){
+  var current=getTheme();
+  applyTheme(current==='dark'?'light':'dark');
+};
+
+/* Apply saved theme immediately */
+applyTheme(getTheme());
+
+/* Hide gate toggle after login, show in RBAC bar */
+var _themeObsPlatform=new MutationObserver(function(muts){
+  var platform=document.getElementById('platform');
+  if(platform&&platform.classList.contains('active')){
+    var gateToggle=document.getElementById('theme-toggle-gate');
+    if(gateToggle)gateToggle.style.display='none';
+    /* Inject toggle into RBAC bar */
+    var barRight=document.querySelector('.rbac-bar-right');
+    if(barRight&&!document.getElementById('theme-toggle-platform')){
+      var wrap=document.createElement('div');
+      wrap.id='theme-toggle-platform';
+      wrap.style.display='flex';
+      wrap.style.alignItems='center';
+      wrap.innerHTML='<div class="kphc-theme-toggle" onclick="kphcToggleTheme()"><span class="kphc-theme-label">'+(getTheme()==='dark'?'Dark':'Light')+'</span><div class="kphc-theme-track"><div class="kphc-theme-knob">'+(getTheme()==='dark'?'🌙':'☀')+'</div></div></div>';
+      barRight.insertBefore(wrap,barRight.firstChild);
+    }
+    _themeObsPlatform.disconnect();
+  }
+});
+var _pEl2=document.getElementById('platform');
+if(_pEl2){
+  if(_pEl2.classList.contains('active')){
+    document.getElementById('theme-toggle-gate').style.display='none';
+  }else{
+    _themeObsPlatform.observe(_pEl2,{attributes:true,attributeFilter:['class']});
+  }
+}
+
+/* Propagate theme when iframe loads */
+var _vf=document.getElementById('viewerFrame');
+if(_vf){
+  _vf.addEventListener('load',function(){
+    try{_vf.contentWindow.postMessage({type:'kphc-theme',theme:getTheme()},'*')}catch(e){}
+  });
+}
+
+})();
+</script>
+<!-- ═══ THEME-SYSTEM END ═══ -->
+<!-- ═══ PREMIUM-UPGRADE START ═══ -->
+<style id="kphc-premium-upgrade">
+/* ╔══════════════════════════════════════════════════════════╗
+   ║  KPHC PREMIUM VISUAL SYSTEM v1.0                        ║
+   ║  Sixapart Healthcare · Enterprise Analytics              ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+/* ── Refined Global Transitions ── */
+*{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ── Login Gate: Executive-Grade Entry ── */
+#loginGate{
+  background:linear-gradient(160deg,#eef2f9 0%,#f4f6fb 35%,#f0f3fa 60%,#e8edf7 100%);
+  background-size:200% 200%;
+  animation:loginBgShimmer 12s ease-in-out infinite;
+}
+@keyframes loginBgShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.login-container{filter:drop-shadow(0 25px 80px rgba(0,0,0,.06))}
+.login-card{
+  box-shadow:0 4px 6px rgba(0,0,0,.01),0 12px 30px rgba(0,0,0,.04),0 40px 80px rgba(0,0,0,.04) !important;
+  border:1px solid rgba(255,255,255,.7) !important;
+  background:rgba(255,255,255,.97) !important;
+  padding:40px 36px !important;
+}
+.login-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--electric),var(--sky),var(--violet),var(--electric));
+  background-size:300% 100%;animation:loginAccentFlow 4s linear infinite;
+  border-radius:24px 24px 0 0;
+}
+@keyframes loginAccentFlow{0%{background-position:0% 0}100%{background-position:300% 0}}
+
+.login-card-head{padding:10px 16px !important;border-radius:10px !important;background:rgba(13,148,136,.04) !important;border:1px solid rgba(13,148,136,.08) !important}
+.login-card-head span{letter-spacing:2.5px !important;font-weight:800 !important}
+
+.login-logo-ring{
+  width:120px !important;height:120px !important;border-radius:28px !important;
+  box-shadow:0 8px 32px rgba(13,148,136,.1),0 2px 8px rgba(0,0,0,.04);
+}
+.login-logo-ring::before{border-radius:28px !important}
+
+.login-field{margin-bottom:20px !important}
+.login-label{font-size:10.5px !important;font-weight:700 !important;letter-spacing:1.5px !important;margin-bottom:7px !important;color:var(--t2) !important}
+.login-input{
+  padding:16px 16px 16px 48px !important;border-radius:14px !important;
+  background:var(--bg) !important;border:1.5px solid rgba(0,0,0,.06) !important;
+  font-size:14.5px !important;font-weight:500 !important;
+  transition:all .3s cubic-bezier(.4,0,.2,1) !important;
+}
+.login-input:focus{
+  background:#fff !important;border-color:var(--electric) !important;
+  box-shadow:0 0 0 4px rgba(13,148,136,.08),0 4px 16px rgba(13,148,136,.06) !important;
+  transform:translateY(-1px) !important;
+}
+.login-input::placeholder{color:var(--t4) !important;font-weight:400 !important}
+
+.login-btn{
+  padding:17px !important;border-radius:14px !important;font-size:14.5px !important;
+  font-weight:800 !important;letter-spacing:.8px !important;
+  box-shadow:0 4px 16px rgba(13,148,136,.2),0 8px 32px rgba(13,148,136,.1) !important;
+  transition:all .35s cubic-bezier(.4,0,.2,1) !important;
+  text-transform:uppercase !important;
+}
+.login-btn:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:0 8px 24px rgba(13,148,136,.25),0 16px 48px rgba(13,148,136,.12) !important;
+}
+.login-btn:active{transform:translateY(0) !important;box-shadow:0 2px 8px rgba(13,148,136,.15) !important}
+
+.login-hipaa{letter-spacing:2.5px !important;padding:10px 24px !important}
+.login-footer{font-size:10.5px !important;line-height:1.8 !important;letter-spacing:.8px !important}
+
+.login-brands{margin:28px auto 24px !important}
+.login-brand-1,.login-brand-2{font-size:17px !important;letter-spacing:3px !important}
+
+/* ── Boot Sequence: Premium Loading ── */
+#bootScreen{background:linear-gradient(160deg,#eef2f9 0%,#f4f6fb 50%,#e8edf7 100%) !important}
+.boot-logo{font-size:46px !important;letter-spacing:-1.5px !important}
+.boot-progress{width:320px !important;height:3px !important;border-radius:6px !important;background:rgba(0,0,0,.06) !important}
+.boot-bar{border-radius:6px !important}
+.boot-item{letter-spacing:1px !important}
+.boot-item .check{font-weight:700 !important}
+
+/* ── Platform Topbar: Glass Authority ── */
+.topbar{
+  height:60px !important;
+  background:rgba(255,255,255,.95) !important;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 4px 24px rgba(0,0,0,.03) !important;
+  border-bottom:1px solid rgba(0,0,0,.04) !important;
+}
+.topbar-title{font-size:17px !important;font-weight:900 !important;letter-spacing:-.3px !important}
+.topbar-sub{font-size:11px !important;letter-spacing:1.2px !important;opacity:.55 !important}
+.logout-btn{
+  padding:9px 20px !important;border-radius:10px !important;
+  font-size:11px !important;font-weight:700 !important;letter-spacing:1px !important;
+  background:transparent !important;border:1.5px solid rgba(0,0,0,.08) !important;
+  transition:all .3s cubic-bezier(.4,0,.2,1) !important;
+}
+.logout-btn:hover{
+  background:rgba(220,38,38,.04) !important;border-color:rgba(220,38,38,.15) !important;
+  color:#dc2626 !important;transform:translateY(-1px) !important;
+}
+
+/* ── KPI Ribbon: Premium Metric Display ── */
+.kpi-ribbon{padding:76px 48px 32px !important;gap:10px !important}
+.kpi-pill{
+  padding:14px 24px !important;border-radius:16px !important;gap:12px !important;
+  background:rgba(255,255,255,.98) !important;
+  border:1px solid rgba(0,0,0,.05) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.02),0 4px 16px rgba(0,0,0,.02) !important;
+  transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+}
+.kpi-pill:hover{
+  transform:translateY(-3px) !important;
+  box-shadow:0 8px 32px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.03) !important;
+  border-color:rgba(0,0,0,.08) !important;
+}
+.kpi-pill-val{font-size:16px !important;font-weight:900 !important;letter-spacing:-.3px !important}
+.kpi-pill-label{font-size:9.5px !important;font-weight:700 !important;letter-spacing:1.8px !important}
+
+/* ── Suite Cards: Premium Dashboard Entries ── */
+.suites-label{font-size:10.5px !important;font-weight:800 !important;letter-spacing:3px !important;margin:36px 0 20px !important}
+.sc-grid{gap:20px !important}
+.suite-card{border-radius:20px !important}
+.sc-inner{
+  padding:36px 30px !important;min-height:310px !important;border-radius:20px !important;
+  background:rgba(255,255,255,.98) !important;
+  border:1px solid rgba(0,0,0,.05) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.01),0 8px 32px rgba(0,0,0,.03) !important;
+  transition:all .5s cubic-bezier(.4,0,.2,1) !important;
+}
+.sc-inner:hover{
+  border-color:rgba(0,0,0,.08) !important;
+  box-shadow:0 12px 48px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.03) !important;
+  transform:translateY(-4px) !important;
+}
+.sc-icon{
+  width:56px !important;height:56px !important;border-radius:16px !important;font-size:26px !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.06) !important;
+}
+.sc-title{font-size:19px !important;font-weight:900 !important;letter-spacing:-.2px !important;margin-bottom:8px !important}
+.sc-desc{font-size:13px !important;line-height:1.7 !important;color:var(--t3) !important}
+.sc-metrics{gap:14px !important;margin-top:20px !important}
+.sc-metric-val{font-size:18px !important;font-weight:900 !important;letter-spacing:-.5px !important}
+.sc-metric-lbl{font-size:8.5px !important;letter-spacing:2px !important;margin-top:3px !important}
+.sc-arrow{
+  width:40px !important;height:40px !important;border-radius:12px !important;
+  font-size:16px !important;transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+}
+.sc-inner:hover .sc-arrow{transform:translateX(4px) !important}
+
+/* ── Dashboard Viewer: Premium Frame ── */
+.viewer-bar{
+  height:52px !important;padding:0 24px !important;
+  background:rgba(255,255,255,.97) !important;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.02) !important;
+}
+#viewerTitle{font-size:13.5px !important;font-weight:800 !important;letter-spacing:.5px !important}
+.dash-btn{
+  padding:8px 18px !important;border-radius:10px !important;
+  font-size:11px !important;font-weight:700 !important;letter-spacing:.8px !important;
+  transition:all .3s cubic-bezier(.4,0,.2,1) !important;
+}
+.dash-btn:hover{transform:translateY(-1px) !important;box-shadow:0 4px 12px rgba(0,0,0,.05) !important}
+
+/* ── Platform Footer: Refined ── */
+.platform-footer{padding:48px 48px 64px !important}
+.platform-footer .ft-brand{font-size:14px !important;letter-spacing:2px !important}
+
+/* ── RBAC Bar: Premium Session ── */
+.rbac-bar{
+  height:48px !important;
+  box-shadow:0 -1px 0 rgba(0,0,0,.03),0 -4px 24px rgba(0,0,0,.02) !important;
+}
+.rbac-btn-manage,.rbac-btn-signout{
+  border-radius:8px !important;font-size:10.5px !important;
+  letter-spacing:.8px !important;font-weight:700 !important;
+  transition:all .3s cubic-bezier(.4,0,.2,1) !important;
+}
+.rbac-btn-manage:hover,.rbac-btn-signout:hover{transform:translateY(-1px) !important}
+
+/* ── Admin Panel: Executive Management ── */
+.rbac-admin-box{border-radius:20px !important;box-shadow:0 20px 80px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.04) !important}
+.rbac-admin-head{padding:28px 32px 24px !important}
+.rbac-admin-h{font-size:20px !important;font-weight:900 !important;letter-spacing:-.3px !important}
+.rbtbl th{
+  font-size:9.5px !important;letter-spacing:2px !important;padding:14px 16px !important;
+  font-weight:800 !important;
+}
+.rbtbl td{padding:14px 16px !important;font-size:13.5px !important}
+.rbtbl tr:hover td{background:rgba(13,148,136,.02) !important}
+.rb-stat-card{
+  border-radius:14px !important;padding:20px !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.02) !important;
+}
+.rb-stat-val{font-size:28px !important;font-weight:900 !important}
+
+/* ── Dark Mode Premium Enhancements ── */
+[data-theme="dark"] #loginGate{
+  background:linear-gradient(160deg,#0a0d14 0%,#0f1219 35%,#111624 60%,#0d1018 100%) !important;
+  background-size:200% 200%;animation:loginBgShimmer 12s ease-in-out infinite;
+}
+[data-theme="dark"] .login-card{
+  background:rgba(22,27,40,.97) !important;
+  border:1px solid rgba(255,255,255,.06) !important;
+  box-shadow:0 4px 6px rgba(0,0,0,.05),0 12px 30px rgba(0,0,0,.15),0 40px 80px rgba(0,0,0,.2) !important;
+}
+[data-theme="dark"] .login-input{background:rgba(255,255,255,.04) !important;border-color:rgba(255,255,255,.06) !important}
+[data-theme="dark"] .login-input:focus{
+  background:rgba(255,255,255,.06) !important;border-color:rgba(13,148,136,.5) !important;
+  box-shadow:0 0 0 4px rgba(13,148,136,.1),0 4px 16px rgba(13,148,136,.08) !important;
+}
+[data-theme="dark"] .login-card-head{background:rgba(13,148,136,.06) !important;border-color:rgba(13,148,136,.1) !important}
+
+[data-theme="dark"] #bootScreen{
+  background:linear-gradient(160deg,#0a0d14 0%,#0f1219 50%,#0d1018 100%) !important;
+}
+[data-theme="dark"] .topbar{
+  background:rgba(22,27,40,.95) !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.03),0 4px 24px rgba(0,0,0,.2) !important;
+  border-bottom-color:rgba(255,255,255,.04) !important;
+}
+[data-theme="dark"] .topbar::after{background:linear-gradient(90deg,transparent,rgba(78,205,196,.1),rgba(168,85,247,.08),transparent) !important}
+[data-theme="dark"] .tb-title{color:#e2e8f0 !important}
+[data-theme="dark"] .tb-sub{color:#64748b !important}
+[data-theme="dark"] .tb-hipaa{background:rgba(78,205,196,.08) !important;border-color:rgba(78,205,196,.15) !important;color:#2dd4bf !important}
+[data-theme="dark"] .tb-user{background:rgba(255,255,255,.04) !important;border-color:rgba(255,255,255,.07) !important}
+[data-theme="dark"] .tb-user:hover{background:rgba(255,255,255,.08) !important;border-color:rgba(255,255,255,.12) !important}
+[data-theme="dark"] .tb-user-name{color:#e2e8f0 !important}
+[data-theme="dark"] .tb-time{color:#94a3b8 !important}
+[data-theme="dark"] .topbar-title{color:#e2e8f0 !important}
+[data-theme="dark"] .topbar-sub{color:#64748b !important}
+[data-theme="dark"] .kpi-pill{
+  background:rgba(22,27,40,.95) !important;border-color:rgba(255,255,255,.05) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.1),0 4px 16px rgba(0,0,0,.1) !important;
+}
+[data-theme="dark"] .kpi-pill:hover{
+  box-shadow:0 8px 32px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.1) !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+[data-theme="dark"] .sc-inner{
+  background:rgba(22,27,40,.95) !important;border-color:rgba(255,255,255,.05) !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.1),0 8px 32px rgba(0,0,0,.15) !important;
+}
+[data-theme="dark"] .sc-inner:hover{
+  border-color:rgba(255,255,255,.1) !important;
+  box-shadow:0 12px 48px rgba(0,0,0,.25),0 4px 16px rgba(0,0,0,.15) !important;
+}
+[data-theme="dark"] .sc-icon{box-shadow:0 4px 16px rgba(0,0,0,.2) !important}
+[data-theme="dark"] .viewer-bar{
+  box-shadow:0 1px 0 rgba(255,255,255,.03),0 4px 16px rgba(0,0,0,.15) !important;
+}
+[data-theme="dark"] .rbac-admin-box{
+  box-shadow:0 20px 80px rgba(0,0,0,.3),0 8px 32px rgba(0,0,0,.2) !important;
+}
+[data-theme="dark"] .rb-stat-card{box-shadow:0 2px 8px rgba(0,0,0,.15) !important}
+</style>
+<!-- ═══ PREMIUM-UPGRADE END ═══ -->
+
+
+
+
+<!-- ═══ MERIDIAN-PHASE2 START ═══ -->
+<style>
+
+/* ═══ MERIDIAN PHASE 2: Navigation & Transitions ═══ */
+
+/* ── Enhanced Viewer Transitions ── */
+#dashViewer {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  opacity: 0 !important;
+  transform: scale(0.97) !important;
+  pointer-events: none !important;
+}
+#dashViewer.active {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto !important;
+  animation: none !important;
+}
+#dashViewer.closing {
+  opacity: 0 !important;
+  transform: scale(0.97) !important;
+  pointer-events: none !important;
+}
+
+/* ── Viewer Bar Upgrade ── */
+.viewer-bar {
+  height: 54px !important;
+  padding: 0 28px !important;
+  gap: 0 !important;
+  background: rgba(255,255,255,.98) !important;
+  backdrop-filter: blur(40px) !important;
+  border-bottom: none !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 4px 20px rgba(0,0,0,.03) !important;
+}
+.viewer-bar::before {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #0d9488, #7c3aed, #0284c7, transparent) !important;
+  opacity: 0.6 !important;
+}
+
+/* ── Breadcrumb Style ── */
+.m-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.m-breadcrumb-sep {
+  color: #d1d5db;
+  font-size: 10px;
+}
+.m-breadcrumb-current {
+  color: #111827;
+  font-weight: 600;
+}
+.m-breadcrumb-platform {
+  color: #0d9488;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.m-breadcrumb-platform:hover {
+  color: #0f766e;
+  text-decoration: underline;
+}
+
+/* ── Viewer Loading State ── */
+.viewer-loading {
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #f4f6fb);
+  z-index: 5;
+  transition: opacity 0.3s ease;
+}
+.viewer-loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.m-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.m-loader-dots {
+  display: flex;
+  gap: 6px;
+}
+.m-loader-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0d9488;
+  animation: m-dotBounce 1.2s ease-in-out infinite;
+}
+.m-loader-dot:nth-child(2) { animation-delay: 0.15s; }
+.m-loader-dot:nth-child(3) { animation-delay: 0.3s; }
+.m-loader-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  letter-spacing: 0.5px;
+}
+@keyframes m-dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Freshness Badge on Suite Cards ── */
+.m-freshness {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #059669;
+  background: rgba(5,150,105,.06);
+  border: 1px solid rgba(5,150,105,.12);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+.m-freshness-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #059669;
+  animation: m-freshPulse 2s ease-in-out infinite;
+}
+@keyframes m-freshPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Suite Card Hover — Subtle Icon Lift ── */
+.suite-card .sc-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.suite-card:hover .sc-icon {
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+/* ── Dark Mode Phase 2 ── */
+[data-theme="dark"] .viewer-bar {
+  background: rgba(22,27,40,.95) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.03), 0 4px 20px rgba(0,0,0,.2) !important;
+}
+[data-theme="dark"] .viewer-bar::before {
+  opacity: 0.4 !important;
+}
+[data-theme="dark"] .m-breadcrumb { color: #64748b; }
+[data-theme="dark"] .m-breadcrumb-sep { color: #475569; }
+[data-theme="dark"] .m-breadcrumb-current { color: #e2e8f0; }
+[data-theme="dark"] .viewer-loading { background: #0f1219; }
+[data-theme="dark"] .m-loader-text { color: #64748b; }
+[data-theme="dark"] .m-freshness {
+  color: #34d399;
+  background: rgba(52,211,153,.06);
+  border-color: rgba(52,211,153,.12);
+}
+[data-theme="dark"] .m-freshness-dot { background: #34d399; }
+
+</style>
+<script>
+
+/* ═══ MERIDIAN PHASE 2: Enhanced Navigation JS ═══ */
+(function(){
+  /* ── 1. Add Breadcrumb + Loading HTML to viewer bar ── */
+  var vbar = document.querySelector('.viewer-bar');
+  if (vbar) {
+    /* Breadcrumb */
+    var bc = document.createElement('div');
+    bc.className = 'm-breadcrumb';
+    bc.id = 'mBreadcrumb';
+    bc.innerHTML = '<span class="m-breadcrumb-platform" onclick="closeDash()">Platform</span>' +
+      '<span class="m-breadcrumb-sep">›</span>' +
+      '<span class="m-breadcrumb-current" id="mBreadcrumbTitle"></span>';
+    vbar.appendChild(bc);
+
+    /* Loading overlay */
+    var viewer = document.getElementById('dashViewer');
+    var loader = document.createElement('div');
+    loader.className = 'viewer-loading';
+    loader.id = 'mViewerLoading';
+    loader.innerHTML = '<div class="m-loader">' +
+      '<div class="m-loader-dots"><div class="m-loader-dot"></div><div class="m-loader-dot"></div><div class="m-loader-dot"></div></div>' +
+      '<div class="m-loader-text">Loading intelligence suite</div></div>';
+    viewer.appendChild(loader);
+  }
+
+  /* ── 2. Enhanced openDash — override original ── */
+  var _origOpen = window.openDash;
+  window.openDash = function(slug, title) {
+    /* Update breadcrumb */
+    var bcTitle = document.getElementById('mBreadcrumbTitle');
+    if (bcTitle) bcTitle.textContent = title;
+    
+    /* Show loading */
+    var loading = document.getElementById('mViewerLoading');
+    if (loading) { loading.classList.remove('hidden'); }
+    
+    /* Set frame src */
+    var frame = document.getElementById('viewerFrame');
+    frame.src = './' + slug + '/index.html';
+    
+    /* Activate viewer with transition */
+    var viewer = document.getElementById('dashViewer');
+    viewer.classList.remove('closing');
+    viewer.style.display = 'block';
+    
+    /* Force reflow for transition */
+    void viewer.offsetWidth;
+    viewer.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    /* Update viewer title */
+    document.getElementById('viewerTitle').textContent = title;
+    
+    /* Hide portal AI orb (sub-dashboard has its own) */
+    var portalOrb = document.getElementById('mAiOrb');
+    var portalPanel = document.getElementById('mAiPanel');
+    if (portalOrb) portalOrb.style.display = 'none';
+    if (portalPanel) { portalPanel.classList.remove('open'); portalPanel.style.display = 'none'; }
+    
+    /* Hide loading when iframe loads */
+    frame.onload = function() {
+      setTimeout(function(){
+        if (loading) loading.classList.add('hidden');
+      }, 300);
+    };
+  };
+
+  /* ── 3. Enhanced closeDash — smooth exit ── */
+  var _origClose = window.closeDash;
+  window.closeDash = function() {
+    var viewer = document.getElementById('dashViewer');
+    viewer.classList.add('closing');
+    viewer.classList.remove('active');
+    
+    setTimeout(function(){
+      viewer.style.display = 'none';
+      viewer.classList.remove('closing');
+      document.getElementById('viewerFrame').src = '';
+      document.body.style.overflow = '';
+      /* Reset loading state */
+      var loading = document.getElementById('mViewerLoading');
+      if (loading) loading.classList.remove('hidden');
+      /* Restore portal AI orb */
+      var portalOrb = document.getElementById('mAiOrb');
+      var portalPanel = document.getElementById('mAiPanel');
+      if (portalOrb) { portalOrb.style.display = ''; portalOrb.classList.remove('active'); }
+      if (portalPanel) portalPanel.style.display = '';
+    }, 400);
+  };
+
+  /* ── 4. Add Freshness Badges to Suite Cards ── */
+  var today = new Date();
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = months[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear();
+  
+  document.querySelectorAll('.suite-card').forEach(function(card){
+    var freq = card.querySelector('.sc-freq');
+    var isDaily = freq && freq.textContent.trim() === 'DAILY';
+    var isWeekly = freq && freq.textContent.trim() === 'WEEKLY';
+    
+    var pages = card.querySelector('.sc-pages');
+    if (pages && !pages.querySelector('.m-freshness')) {
+      var badge = document.createElement('div');
+      badge.className = 'm-freshness';
+      if (isDaily) {
+        badge.innerHTML = '<span class="m-freshness-dot"></span>Updated today · ' + dateStr;
+      } else if (isWeekly) {
+        badge.innerHTML = '<span class="m-freshness-dot"></span>Refreshed this week';
+      } else {
+        badge.innerHTML = '<span class="m-freshness-dot" style="background:#ca8a04;animation:none"></span>Monthly report';
+        badge.style.color = '#ca8a04';
+        badge.style.background = 'rgba(202,138,4,.06)';
+        badge.style.borderColor = 'rgba(202,138,4,.12)';
+      }
+      pages.after(badge);
+    }
+  });
+
+})();
+
+</script>
+<!-- ═══ MERIDIAN-PHASE2 END ═══ -->
+
+<!-- ═══ MERIDIAN-PHASE3 START ═══ -->
+<style>
+
+/* ═══════════════════════════════════════════════════════════
+   MERIDIAN PHASE 3: Chart & Visualization Upgrade
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 1. VERTICAL BAR CHART — Unified Animation ── */
+.bar, [class*="bar-col"] .bar {
+  animation: m-barGrow 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) both !important;
+  border-radius: 6px 6px 2px 2px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: filter 0.2s ease, box-shadow 0.3s ease !important;
+}
+.bar:hover {
+  filter: brightness(1.12) saturate(1.15) !important;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.12) !important;
+}
+@keyframes m-barGrow {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.bar-col { transform-origin: bottom !important; }
+.bar-wrap, [class*="bar-wrap"] {
+  align-items: flex-end !important;
+}
+
+/* ── Bar Tooltips — Premium Floating Style ── */
+.bar-tip, [class*="bar-tip"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  background: rgba(17,24,39,.92) !important;
+  color: #fff !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transform: translateX(-50%) translateY(-4px) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  z-index: 10 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15) !important;
+  backdrop-filter: blur(8px) !important;
+  left: 50% !important;
+}
+.bar:hover .bar-tip,
+[class*="bar-col"]:hover .bar-tip {
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(-8px) !important;
+}
+
+/* ── Bar Labels ── */
+.bar-lbl, [class*="bar-lbl"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  color: var(--t3, var(--text-muted, #9ca3af)) !important;
+  letter-spacing: 0.2px !important;
+  transition: color 0.2s !important;
+}
+.bar-col:hover .bar-lbl,
+[class*="bar-col"]:hover .bar-lbl {
+  color: var(--t1, var(--text-primary, #111827)) !important;
+}
+
+/* ── 2. HORIZONTAL BAR CHART — Unified ── */
+.hbar-row, .bar-r, [class*="hbar-row"] {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: default !important;
+}
+.hbar-row:hover, .bar-r:hover {
+  transform: translateX(4px) !important;
+}
+.hbar-fill, .bar-f, [class*="hbar-fill"] {
+  border-radius: 6px !important;
+  transition: width 1s cubic-bezier(0.34, 1.3, 0.64, 1) !important;
+  position: relative !important;
+}
+.hbar-fill::after, .bar-f::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, transparent 60%, rgba(255,255,255,.15)) !important;
+  pointer-events: none !important;
+}
+.hbar-track, .bar-t, [class*="hbar-track"] {
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  background: rgba(0,0,0,.03) !important;
+}
+.hbar-label, .bar-l, [class*="hbar-label"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+  transition: color 0.2s !important;
+}
+.hbar-row:hover .hbar-label, .bar-r:hover .bar-l {
+  color: var(--t1, var(--text-primary, #111827)) !important;
+}
+.hbar-val, .bar-v, [class*="hbar-val"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 700 !important;
+}
+
+/* ── 3. STACKED BAR CHART ── */
+.stk-row, [class*="stk-row"] {
+  transition: all 0.2s ease !important;
+}
+.stk-row:hover {
+  transform: translateX(3px) !important;
+}
+.stk-bars, [class*="stk-bars"] {
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.04) !important;
+}
+.stk-seg, [class*="stk-seg"] {
+  transition: width 1s cubic-bezier(0.34, 1.3, 0.64, 1), filter 0.2s !important;
+  position: relative !important;
+}
+.stk-seg:hover, [class*="stk-seg"]:hover {
+  filter: brightness(1.15) !important;
+  z-index: 2 !important;
+}
+.stk-label, [class*="stk-label"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+}
+.stk-total, [class*="stk-total"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 700 !important;
+}
+
+/* ── 4. DONUT / SVG CHARTS ── */
+.donut-svg, [class*="donut-svg"] {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.06)) !important;
+}
+.donut-svg:hover, [class*="donut-svg"]:hover {
+  transform: scale(1.03) !important;
+}
+.donut-svg circle, svg circle[stroke-dasharray] {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 0.3s ease !important;
+}
+.donut-svg circle:hover, svg circle[stroke-dasharray]:hover {
+  filter: brightness(1.2) drop-shadow(0 0 8px currentColor) !important;
+}
+.donut-wrap, [class*="donut-wrap"] {
+  transition: all 0.3s ease !important;
+}
+
+/* ── Donut Legend ── */
+.leg-item, .legend-item, [class*="leg-item"], [class*="legend-item"] {
+  font-family: 'DM Sans', sans-serif !important;
+  transition: all 0.2s ease !important;
+  cursor: default !important;
+  border-radius: 8px !important;
+}
+.leg-item:hover, .legend-item:hover, [class*="leg-item"]:hover {
+  transform: translateX(3px) !important;
+  background: rgba(0,0,0,.02) !important;
+}
+.leg-dot, .legend-dot, [class*="leg-dot"], [class*="legend-dot"] {
+  border-radius: 4px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+.leg-item:hover .leg-dot, .legend-item:hover .legend-dot {
+  transform: scale(1.3) !important;
+  box-shadow: 0 0 8px currentColor !important;
+}
+.leg-val, .legend-pct, [class*="leg-val"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+.leg-pct, [class*="leg-pct"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  opacity: 0.6 !important;
+}
+
+/* ── 5. HEATMAP CELLS (S3) ── */
+.heat-cell, [class*="heat-cell"] {
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: default !important;
+  position: relative !important;
+}
+.heat-cell:hover, [class*="heat-cell"]:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.1) !important;
+  z-index: 2 !important;
+}
+.heat-val, [class*="heat-val"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 900 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+.heat-day, [class*="heat-day"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+.heat-date, [class*="heat-date"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+.heat-grid, [class*="heat-grid"] {
+  gap: 8px !important;
+}
+
+/* ── 6. PROGRESS BARS ── */
+.prog-track, [class*="prog-track"] {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background: rgba(0,0,0,.04) !important;
+}
+.prog-fill, [class*="prog-fill"] {
+  border-radius: 8px !important;
+  transition: width 1.4s cubic-bezier(0.34, 1.3, 0.64, 1) !important;
+  position: relative !important;
+}
+.prog-fill::after, [class*="prog-fill"]::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,.2)) !important;
+  pointer-events: none !important;
+}
+.prog-label, [class*="prog-label"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+}
+.prog-val, [class*="prog-val"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+.prog-row, [class*="prog-row"] {
+  transition: all 0.2s ease !important;
+}
+.prog-row:hover {
+  transform: translateX(3px) !important;
+}
+
+/* ── 7. WEEK / STAT CARDS ── */
+.week-card, [class*="week-card"] {
+  border-radius: 14px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: default !important;
+}
+.week-card:hover, [class*="week-card"]:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08) !important;
+}
+.wk-label, [class*="wk-label"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+.wk-val, [class*="wk-val"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 900 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+.wk-sub, [class*="wk-sub"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  opacity: 0.65 !important;
+}
+
+/* ── 8. CHART LEGENDS — Unified Layout ── */
+.chart-legend, [class*="chart-legend"] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+.chart-legend-item, [class*="chart-legend-item"] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--t2, var(--text-secondary, #4b5563)) !important;
+}
+.chart-legend-dot, [class*="chart-legend-dot"] {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 3px !important;
+}
+.legend, [class*="legend"]:not(.legend-item):not(.legend-dot):not(.legend-pct):not(.legend-grid):not(.donut-legend) {
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+}
+
+/* ── 9. DUAL BAR CHART (R&I) ── */
+.dual-col, [class*="dual-col"] {
+  transition: all 0.2s ease !important;
+}
+.dual-col:hover, [class*="dual-col"]:hover {
+  transform: scaleX(1.1) !important;
+}
+.dual-lbl, [class*="dual-lbl"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+}
+
+/* ── 10. PANEL/CARD CHART CONTAINERS ── */
+.panel, .card, .glass-card, [class*="panel"], [class*="chart-panel"] {
+  border-radius: 14px !important;
+}
+.panel-title, [class*="panel-title"] {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* ── 11. DENIALS & CC SPECIFIC BAR OVERRIDES ── */
+.bar-f, [class*="bar-f"] {
+  border-radius: 6px !important;
+  transition: width 1s cubic-bezier(0.34, 1.3, 0.64, 1), filter 0.2s !important;
+}
+.bar-f:hover, [class*="bar-f"]:hover {
+  filter: brightness(1.1) !important;
+}
+.bar-t, [class*="bar-t"] {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+.bar-l, [class*="bar-l"] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+  transition: color 0.2s !important;
+}
+.bar-r:hover .bar-l, [class*="bar-r"]:hover .bar-l {
+  color: var(--t1, var(--text-primary, #111827)) !important;
+}
+.bar-v, [class*="bar-v"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* ── 12. DARK MODE CHART OVERRIDES ── */
+[data-theme="dark"] .bar-tip, [data-theme="dark"] [class*="bar-tip"] {
+  background: rgba(255,255,255,.92) !important;
+  color: #111827 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.3) !important;
+}
+[data-theme="dark"] .hbar-track, [data-theme="dark"] .bar-t,
+[data-theme="dark"] [class*="hbar-track"], [data-theme="dark"] [class*="prog-track"] {
+  background: rgba(255,255,255,.04) !important;
+}
+[data-theme="dark"] .heat-cell:hover, [data-theme="dark"] [class*="heat-cell"]:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
+}
+[data-theme="dark"] .leg-item:hover, [data-theme="dark"] .legend-item:hover {
+  background: rgba(255,255,255,.04) !important;
+}
+[data-theme="dark"] .week-card:hover, [data-theme="dark"] [class*="week-card"]:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,.2) !important;
+}
+[data-theme="dark"] .stk-bars, [data-theme="dark"] [class*="stk-bars"] {
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.15) !important;
+}
+
+</style>
+<!-- ═══ MERIDIAN-PHASE3 END ═══ -->
+
+<!-- ═══ MERIDIAN-PHASE4 START ═══ -->
+<style>
+
+/* ═══ MERIDIAN PHASE 4: AI Intelligence Layer ═══ */
+
+/* ── AI Floating Orb ── */
+/* Portal orb visibility is controlled via JS in openDash/closeDash */
+.m-ai-orb {
+  position: fixed;
+  bottom: 76px;
+  right: 28px;
+  z-index: 9999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d9488, #7c3aed);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(13,148,136,.3), 0 0 0 0 rgba(13,148,136,.2);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: m-orbPulse 3s ease-in-out infinite;
+}
+.m-ai-orb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(13,148,136,.4), 0 0 0 8px rgba(13,148,136,.08);
+}
+.m-ai-orb.active {
+  animation: none;
+  transform: scale(0.95);
+  box-shadow: 0 2px 12px rgba(13,148,136,.2);
+}
+.m-ai-orb svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: white;
+  stroke-width: 1.8;
+}
+@keyframes m-orbPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(13,148,136,.3), 0 0 0 0 rgba(13,148,136,.15); }
+  50% { box-shadow: 0 4px 20px rgba(13,148,136,.3), 0 0 0 12px rgba(13,148,136,0); }
+}
+
+/* ── AI Panel ── */
+.m-ai-panel {
+  position: fixed;
+  bottom: 138px;
+  right: 28px;
+  z-index: 9999;
+  width: 380px;
+  max-height: calc(100vh - 140px);
+  background: rgba(255,255,255,.98);
+  backdrop-filter: blur(40px);
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.02);
+  transform: translateY(16px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.m-ai-panel.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Panel Header */
+.m-ai-header {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.m-ai-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0d9488, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.m-ai-htext {
+  flex: 1;
+}
+.m-ai-htitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.3px;
+}
+.m-ai-hsub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 1px;
+}
+
+/* Panel Body */
+.m-ai-body {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.m-ai-section {
+  margin-bottom: 16px;
+}
+.m-ai-section:last-child {
+  margin-bottom: 0;
+}
+.m-ai-slabel {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #9ca3af;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.m-ai-card {
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+.m-ai-card:hover {
+  transform: translateX(2px);
+}
+.m-ai-card.insight { background: rgba(13,148,136,.04); border-left: 3px solid #0d9488; }
+.m-ai-card.anomaly { background: rgba(220,38,38,.04); border-left: 3px solid #dc2626; }
+.m-ai-card.positive { background: rgba(22,163,74,.04); border-left: 3px solid #16a34a; }
+.m-ai-card.neutral { background: rgba(124,58,237,.04); border-left: 3px solid #7c3aed; }
+.m-ai-card.warning { background: rgba(202,138,4,.04); border-left: 3px solid #ca8a04; }
+.m-ai-card strong {
+  font-weight: 700;
+  color: #111827;
+}
+.m-ai-card .m-ai-metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Digest Banner (Portal) */
+.m-digest-banner {
+  margin: 0 auto 28px;
+  max-width: 1200px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(13,148,136,.04), rgba(124,58,237,.03));
+  border: 1px solid rgba(13,148,136,.1);
+  position: relative;
+  overflow: hidden;
+}
+.m-digest-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #0d9488, #7c3aed);
+  border-radius: 4px 0 0 4px;
+}
+.m-digest-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #0d9488;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.m-digest-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #0d9488;
+  animation: m-orbPulse 2.5s ease infinite;
+}
+.m-digest-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #374151;
+}
+.m-digest-text strong {
+  font-weight: 700;
+  color: #111827;
+}
+.m-digest-text .m-up { color: #16a34a; font-weight: 600; }
+.m-digest-text .m-down { color: #dc2626; font-weight: 600; }
+.m-digest-text .m-metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: #0d9488;
+}
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .m-ai-panel {
+  background: rgba(22,27,40,.95);
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+[data-theme="dark"] .m-ai-header { border-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .m-ai-htitle { color: #e2e8f0; }
+[data-theme="dark"] .m-ai-hsub { color: #64748b; }
+[data-theme="dark"] .m-ai-slabel { color: #64748b; }
+[data-theme="dark"] .m-ai-card { color: #94a3b8; }
+[data-theme="dark"] .m-ai-card strong { color: #e2e8f0; }
+[data-theme="dark"] .m-ai-card.insight { background: rgba(13,148,136,.08); }
+[data-theme="dark"] .m-ai-card.anomaly { background: rgba(220,38,38,.08); }
+[data-theme="dark"] .m-ai-card.positive { background: rgba(22,163,74,.08); }
+[data-theme="dark"] .m-ai-card.neutral { background: rgba(124,58,237,.08); }
+[data-theme="dark"] .m-ai-card.warning { background: rgba(202,138,4,.08); }
+[data-theme="dark"] .m-digest-banner {
+  background: linear-gradient(135deg, rgba(13,148,136,.06), rgba(124,58,237,.04));
+  border-color: rgba(13,148,136,.15);
+}
+[data-theme="dark"] .m-digest-text { color: #94a3b8; }
+[data-theme="dark"] .m-digest-text strong { color: #e2e8f0; }
+
+</style>
+
+<button class="m-ai-orb" id="mAiOrb" onclick="document.getElementById('mAiPanel').classList.toggle('open');this.classList.toggle('active')" title="Sixapart Intelligence">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/><path d="M8 12h.01M16 12h.01" opacity=".5"/></svg>
+</button>
+<div class="m-ai-panel" id="mAiPanel">
+  <div class="m-ai-header">
+    <div class="m-ai-logo">⚡</div>
+    <div class="m-ai-htext">
+      <div class="m-ai-htitle">Sixapart Intelligence</div>
+      <div class="m-ai-hsub">AI-powered insights · Real-time analysis</div>
+    </div>
+  </div>
+  <div class="m-ai-body" id="mAiBody"></div>
+</div>
+
+<script>
+
+(function(){
+  /* ── 1. AI DAILY DIGEST BANNER ── */
+  var suiteGrid = document.querySelector('.suites-grid');
+  if(suiteGrid){
+    var vals = {};
+    document.querySelectorAll('.sc-metric-val').forEach(function(el){
+      var label = el.previousElementSibling ? el.previousElementSibling.textContent.trim() : '';
+      vals[label] = el.textContent.trim();
+    });
+    
+    var ordersVol = vals['12mo Orders'] || '33,443';
+    var avgDay = vals['Avg/Day'] || '124.50';
+    var totalRef = vals['Total Referrals'] || '9,189';
+    var intake = vals['Intake Processed'] || '6,447';
+    var dailyAvg = vals['Daily Avg'] || '34.9/day';
+    var queue = vals['Active Queue'] || '77';
+    
+    var today = new Date();
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var dateStr = months[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear();
+    
+    var banner = document.createElement('div');
+    banner.className = 'm-digest-banner';
+    banner.style.animation = 'meridianFadeUp 0.6s ease 1.5s both';
+    banner.innerHTML = '<div class="m-digest-label"><span class="m-digest-dot"></span>INTELLIGENCE PULSE — ' + dateStr + '</div>' +
+      '<div class="m-digest-text">' +
+      '<strong>Daily Digest:</strong> S3 Orders at <span class="m-metric">' + ordersVol + '</span> across 13 completed months (' + avgDay + ' avg/day). ' +
+      'Referral & Intake operations at <span class="m-metric">' + totalRef + '</span> referrals and <span class="m-metric">' + intake + '</span> intake documents processed. ' +
+      'Current daily throughput at <strong>' + dailyAvg + '</strong> referrals. ' +
+      'Active queue at <span class="m-metric">' + queue + '</span> items — healthy levels. ' +
+      'All systems operational.' +
+      '</div>';
+    suiteGrid.parentNode.insertBefore(banner, suiteGrid);
+  }
+
+  /* ── 2. AI ORB INSIGHTS — Fully Dynamic ── */
+  var body = document.getElementById('mAiBody');
+  if(body){
+    /* Read all metrics from DOM */
+    var v = {};
+    document.querySelectorAll('.sc-metric-val').forEach(function(el){
+      var lbl = el.previousElementSibling ? el.previousElementSibling.textContent.trim() : '';
+      v[lbl] = el.textContent.trim();
+    });
+    
+    var orders = v['12mo Orders'] || '—';
+    var avgD = v['Avg/Day'] || '—';
+    var refs = v['Total Referrals'] || '—';
+    var intk = v['Intake Processed'] || '—';
+    var dAvg = v['Daily Avg'] || '—';
+    var q = v['Active Queue'] || '—';
+    var denLines = v['Denied Claims'] || '—';
+    var collect = v['Collectability'] || '—';
+    var verif = v['Verifications'] || '—';
+    var authRate = v['Auth Rate'] || '—';
+    
+    /* Parse numerics for intelligence */
+    var qNum = parseInt(q) || 0;
+    var dAvgNum = parseFloat(dAvg) || 0;
+    var ordersNum = parseInt(orders.replace(/,/g,'')) || 0;
+    var refsNum = parseInt(refs.replace(/,/g,'')) || 0;
+    var intkNum = parseInt(intk.replace(/,/g,'')) || 0;
+    
+    /* Determine queue health */
+    var qClass = qNum < 80 ? 'positive' : qNum < 150 ? 'warning' : 'anomaly';
+    var qText = qNum < 80 ? 'healthy operating range' : qNum < 150 ? 'elevated — monitor closely' : 'critical — immediate attention needed';
+    
+    /* Determine referral trend */
+    var refClass = dAvgNum >= 35 ? 'positive' : dAvgNum >= 30 ? 'warning' : 'anomaly';
+    var refTrend = dAvgNum >= 39 ? 'above February pace — strong performance' : dAvgNum >= 35 ? 'slightly below February\'s 39.45/day — within normal range' : dAvgNum >= 30 ? 'running below February pace — monitor for sustained decline' : 'significantly below target — recommend mid-month review';
+    
+    /* Build platform status */
+    var html = '';
+    html += '<div class="m-ai-section"><div class="m-ai-slabel">PLATFORM STATUS</div>';
+    html += '<div class="m-ai-card positive">All <strong>5 intelligence suites</strong> operational. ';
+    html += 'Orders: <strong class="m-ai-metric">' + orders + '</strong> (' + avgD + '/day). ';
+    html += 'Referrals: <strong class="m-ai-metric">' + refs + '</strong>. ';
+    html += 'Intake: <strong class="m-ai-metric">' + intk + '</strong>.</div></div>';
+    
+    /* Key observations — all computed */
+    html += '<div class="m-ai-section"><div class="m-ai-slabel">KEY OBSERVATIONS</div>';
+    
+    /* Referral trend */
+    html += '<div class="m-ai-card ' + refClass + '">Referral daily avg at <strong>' + dAvg + '</strong> — ' + refTrend + '.</div>';
+    
+    /* Queue analysis */
+    html += '<div class="m-ai-card ' + qClass + '">Active queue at <strong class="m-ai-metric">' + q + '</strong> items — ' + qText + '.</div>';
+    
+    /* Infusion & Denials status */
+    if(verif !== '—'){
+      html += '<div class="m-ai-card neutral">Infusion: <strong class="m-ai-metric">' + verif + '</strong> verifications tracked. Auth rate: <strong>' + authRate + '</strong>.</div>';
+    }
+    if(denLines !== '—'){
+      html += '<div class="m-ai-card neutral">Denials: <strong class="m-ai-metric">' + denLines + '</strong> lines analyzed. Collectability: <strong>' + collect + '</strong>.</div>';
+    }
+    html += '</div>';
+    
+    /* Dynamic recommendations based on current data */
+    html += '<div class="m-ai-section"><div class="m-ai-slabel">RECOMMENDATIONS</div>';
+    
+    if(dAvgNum > 0 && dAvgNum < 35){
+      html += '<div class="m-ai-card warning">Referral daily average (' + dAvg + ') is below 35/day threshold. Consider a mid-month operational review to identify and address the shortfall.</div>';
+    } else if(dAvgNum >= 35){
+      html += '<div class="m-ai-card positive">Referral volume is on pace. Current throughput supports projected monthly targets.</div>';
+    }
+    
+    if(qNum > 100){
+      html += '<div class="m-ai-card anomaly">Queue exceeds 100 items. Recommend prioritizing clearance — focus on oldest items first to prevent aging escalation.</div>';
+    } else {
+      html += '<div class="m-ai-card positive">Queue levels healthy. Current intake capacity supports projected volume through end of month.</div>';
+    }
+    
+    /* Combined throughput */
+    if(refsNum > 0 && intkNum > 0){
+      var combinedThroughput = refsNum + intkNum;
+      html += '<div class="m-ai-card insight">Combined platform throughput: <strong class="m-ai-metric">' + combinedThroughput.toLocaleString() + '</strong> items (referrals + intake). This represents the full operational volume tracked by Sixapart.</div>';
+    }
+    html += '</div>';
+    
+    body.innerHTML = html;
+  }
+})();
+
+</script>
+<!-- ═══ MERIDIAN-PHASE4 END ═══ -->
+
+
+<!-- COLOR BRIDGE -->
+<div id="sxaBridge" style="display:none;position:fixed;inset:0;z-index:99999;pointer-events:none">
+<div id="sxaBridgeBg" style="position:absolute;inset:0;background:#030810;opacity:1;transition:opacity 1.8s cubic-bezier(.4,0,.2,1)"></div>
+<div id="sxaBridgeGlow" style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.12) 0%,rgba(0,212,255,.04) 40%,transparent 70%);opacity:1;transition:opacity 2s ease .3s,transform 2s ease .3s"></div></div>
+<script>(function(){if(sessionStorage.getItem('sxa_warp')==='1'){sessionStorage.removeItem('sxa_warp');var b=document.getElementById('sxaBridge');b.style.display='block';setTimeout(function(){document.getElementById('sxaBridgeBg').style.opacity='0';document.getElementById('sxaBridgeGlow').style.opacity='0';document.getElementById('sxaBridgeGlow').style.transform='translate(-50%,-50%) scale(4)';},400);setTimeout(function(){b.remove();},3000);}})();</script>
+<!-- END COLOR BRIDGE -->
+
+</body>
+</html>
