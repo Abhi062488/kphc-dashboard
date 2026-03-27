@@ -17,7 +17,7 @@ initDB();
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname)));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
@@ -41,7 +41,7 @@ function isAuthenticated(req, res, next) {
 
 // Login page
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 // Login POST
@@ -91,38 +91,38 @@ app.get('/logout', (req, res) => {
 
 // Dashboard (protected)
 app.get('/', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Serve other dashboard pages (protected)
 app.get('/command-center/*', isAuthenticated, (req, res) => {
   const file = req.path.replace('/command-center/', '');
-  res.sendFile(path.join(__dirname, 'public', 'command-center', file));
+  res.sendFile(path.join(__dirname, 'command-center', file));
 });
 
 app.get('/denials/*', isAuthenticated, (req, res) => {
   const file = req.path.replace('/denials/', '');
-  res.sendFile(path.join(__dirname, 'public', 'denials', file));
+  res.sendFile(path.join(__dirname, 'denials', file));
 });
 
 app.get('/infusion/*', isAuthenticated, (req, res) => {
   const file = req.path.replace('/infusion/', '');
-  res.sendFile(path.join(__dirname, 'public', 'infusion', file));
+  res.sendFile(path.join(__dirname, 'infusion', file));
 });
 
 app.get('/referral-intake/*', isAuthenticated, (req, res) => {
   const file = req.path.replace('/referral-intake/', '');
-  res.sendFile(path.join(__dirname, 'public', 'referral-intake', file));
+  res.sendFile(path.join(__dirname, 'referral-intake', file));
 });
 
 app.get('/s3-orders/*', isAuthenticated, (req, res) => {
   const file = req.path.replace('/s3-orders/', '');
-  res.sendFile(path.join(__dirname, 'public', 's3-orders', file));
+  res.sendFile(path.join(__dirname, 's3-orders', file));
 });
 
 // Admin panel - Add new client
 app.get('/admin', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // Admin API to get all users
