@@ -6,6 +6,10 @@ const path = require('path');
 require('dotenv').config();
 
 const { initDB, getUser, addUser, getAllUsers, deleteUser, updateUser } = require('./db');
+const ScalpingBotEngine = require('./trading-bot/bot-engine');
+
+// Initialize Trading Bot
+const tradingBot = new ScalpingBotEngine();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -188,6 +192,154 @@ app.delete('/api/users/:id', isAuthenticated, (req, res) => {
       return res.status(500).json({ error: 'Database error' });
     }
     res.json({ success: true, message: 'User deleted successfully' });
+  });
+});
+
+// ============================================
+// TRADING BOT API ROUTES
+// ============================================
+
+// Trading bot dashboard page
+app.get('/trading-bot', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'trading-bot', 'dashboard.html'));
+});
+
+// Get current bot state and analysis
+app.get('/api/trading-bot/state', isAuthenticated, async (req, res) => {
+  try {
+    const state = tradingBot.getState();
+    res.json(state);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get live market analysis
+app.get('/api/trading-bot/analysis', isAuthenticated, async (req, res) => {
+  try {
+    // Try live data first, fall back to demo
+    await tradingBot.initialize();
+    await tradingBot.tick();
+
+    const state = tradingBot.getState();
+    if (state.signals.length === 0 && tradingBot.signals.length === 0) {
+      // No live data available, send demo
+      const demo = tradingBot.generateDemoData();
+      res.json(demo);
+    } else {
+      res.json({
+        analysis: tradingBot._lastAnalysis || tradingBot.generateDemoData().analysis,
+        signals: state.signals,
+        positions: state.positions,
+        pnl: state.pnl,
+        timestamp: new Date().toISOString(),
+        isDemo: false,
+      });
+    }
+  } catch (err) {
+    // Fallback to demo data
+    const demo = tradingBot.generateDemoData();
+    res.json(demo);
+  }
+});
+
+// Get demo data (for testing / off-market hours)
+app.get('/api/trading-bot/demo', isAuthenticated, (req, res) => {
+  const demo = tradingBot.generateDemoData();
+  res.json(demo);
+});
+
+// Start the bot
+app.post('/api/trading-bot/start', isAuthenticated, async (req, res) => {
+  try {
+    await tradingBot.initialize();
+    tradingBot.start();
+    res.json({ success: true, message: 'Bot started' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Stop the bot
+app.post('/api/trading-bot/stop', isAuthenticated, (req, res) => {
+  tradingBot.stop();
+  res.json({ success: true, message: 'Bot stopped' });
+});
+
+// Add a position (user accepts a signal)
+app.post('/api/trading-bot/position', isAuthenticated, (req, res) => {
+  const signal = req.body;
+  if (!signal || !signal.instrument) {
+    return res.status(400).json({ error: 'Invalid signal data' });
+  }
+  const position = tradingBot.addPosition(signal);
+  res.json({ success: true, position });
+});
+
+// Close a position manually
+app.post('/api/trading-bot/position/:id/close', isAuthenticated, (req, res) => {
+  const { id } = req.params;
+  const pos = tradingBot.activePositions.find(p => p.id === id);
+  if (!pos) {
+    return res.status(404).json({ error: 'Position not found' });
+  }
+  pos.status = 'MANUAL_CLOSE';
+  tradingBot.closePosition(pos, 'Manual close');
+  tradingBot.cleanPositions();
+  res.json({ success: true, message: 'Position closed' });
+});
+
+// Update bot configuration
+app.put('/api/trading-bot/config', isAuthenticated, (req, res) => {
+  const newConfig = req.body;
+  tradingBot.updateConfig(newConfig);
+  res.json({ success: true, config: tradingBot.config });
+});
+
+// Get trade history
+app.get('/api/trading-bot/trades', isAuthenticated, (req, res) => {
+  res.json({
+    trades: tradingBot.pnl.trades,
+    summary: {
+      totalTrades: tradingBot.pnl.trades.length,
+      realizedPnL: tradingBot.pnl.realized,
+      winRate: tradingBot.calculateWinRate(),
+    }
+  });
+});
+
+// SSE endpoint for real-time updates
+app.get('/api/trading-bot/stream', isAuthenticated, (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  });
+
+  const sendUpdate = (data) => {
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
+
+  // Send initial data
+  const demo = tradingBot.generateDemoData();
+  sendUpdate(demo);
+
+  // Listen for updates
+  tradingBot.on('update', sendUpdate);
+  tradingBot.on('trade_closed', (trade) => {
+    sendUpdate({ type: 'trade_closed', trade });
+  });
+
+  // Send periodic demo updates if bot not running
+  const demoInterval = setInterval(() => {
+    if (!tradingBot.running) {
+      const demo = tradingBot.generateDemoData();
+      sendUpdate(demo);
+    }
+  }, 5000);
+
+  req.on('close', () => {
+    clearInterval(demoInterval);
   });
 });
 
