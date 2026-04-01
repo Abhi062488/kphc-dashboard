@@ -199,13 +199,13 @@ app.delete('/api/users/:id', isAuthenticated, (req, res) => {
 // TRADING BOT API ROUTES
 // ============================================
 
-// Trading bot dashboard page
-app.get('/trading-bot', isAuthenticated, (req, res) => {
+// Trading bot dashboard page (public access - no login needed)
+app.get('/trading-bot', (req, res) => {
   res.sendFile(path.join(__dirname, 'trading-bot', 'dashboard.html'));
 });
 
 // Get current bot state and analysis
-app.get('/api/trading-bot/state', isAuthenticated, async (req, res) => {
+app.get('/api/trading-bot/state', async (req, res) => {
   try {
     const state = tradingBot.getState();
     res.json(state);
@@ -215,7 +215,7 @@ app.get('/api/trading-bot/state', isAuthenticated, async (req, res) => {
 });
 
 // Get live market analysis
-app.get('/api/trading-bot/analysis', isAuthenticated, async (req, res) => {
+app.get('/api/trading-bot/analysis', async (req, res) => {
   try {
     // Try live data first, fall back to demo
     await tradingBot.initialize();
@@ -244,13 +244,13 @@ app.get('/api/trading-bot/analysis', isAuthenticated, async (req, res) => {
 });
 
 // Get demo data (for testing / off-market hours)
-app.get('/api/trading-bot/demo', isAuthenticated, (req, res) => {
+app.get('/api/trading-bot/demo', (req, res) => {
   const demo = tradingBot.generateDemoData();
   res.json(demo);
 });
 
 // Start the bot
-app.post('/api/trading-bot/start', isAuthenticated, async (req, res) => {
+app.post('/api/trading-bot/start', async (req, res) => {
   try {
     await tradingBot.initialize();
     tradingBot.start();
@@ -261,13 +261,13 @@ app.post('/api/trading-bot/start', isAuthenticated, async (req, res) => {
 });
 
 // Stop the bot
-app.post('/api/trading-bot/stop', isAuthenticated, (req, res) => {
+app.post('/api/trading-bot/stop', (req, res) => {
   tradingBot.stop();
   res.json({ success: true, message: 'Bot stopped' });
 });
 
 // Add a position (user accepts a signal)
-app.post('/api/trading-bot/position', isAuthenticated, (req, res) => {
+app.post('/api/trading-bot/position', (req, res) => {
   const signal = req.body;
   if (!signal || !signal.instrument) {
     return res.status(400).json({ error: 'Invalid signal data' });
@@ -277,7 +277,7 @@ app.post('/api/trading-bot/position', isAuthenticated, (req, res) => {
 });
 
 // Close a position manually
-app.post('/api/trading-bot/position/:id/close', isAuthenticated, (req, res) => {
+app.post('/api/trading-bot/position/:id/close', (req, res) => {
   const { id } = req.params;
   const pos = tradingBot.activePositions.find(p => p.id === id);
   if (!pos) {
@@ -290,14 +290,14 @@ app.post('/api/trading-bot/position/:id/close', isAuthenticated, (req, res) => {
 });
 
 // Update bot configuration
-app.put('/api/trading-bot/config', isAuthenticated, (req, res) => {
+app.put('/api/trading-bot/config', (req, res) => {
   const newConfig = req.body;
   tradingBot.updateConfig(newConfig);
   res.json({ success: true, config: tradingBot.config });
 });
 
 // Get trade history
-app.get('/api/trading-bot/trades', isAuthenticated, (req, res) => {
+app.get('/api/trading-bot/trades', (req, res) => {
   res.json({
     trades: tradingBot.pnl.trades,
     summary: {
@@ -309,7 +309,7 @@ app.get('/api/trading-bot/trades', isAuthenticated, (req, res) => {
 });
 
 // SSE endpoint for real-time updates
-app.get('/api/trading-bot/stream', isAuthenticated, (req, res) => {
+app.get('/api/trading-bot/stream', (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
