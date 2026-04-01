@@ -797,12 +797,59 @@ class ScalpingBotEngine {
       };
     };
 
+    // Generate demo signals so users can see how the bot works
+    const now = new Date();
+    const demoSignals = [];
+    const strategies = [
+      { type: 'BUY', strategy: 'PCR_BULLISH', confidence: 'HIGH', optionType: 'CE',
+        reasonFn: (pcr) => `PCR ${pcr} indicates strong put writing (bullish). OI confirms uptrend.` },
+      { type: 'BUY', strategy: 'OI_BUILDUP_BEAR', confidence: 'MEDIUM', optionType: 'PE',
+        reasonFn: () => `Heavy call OI buildup at resistance. Bearish reversal expected.` },
+      { type: 'ALERT', strategy: 'BREAKOUT_WATCH', confidence: 'MEDIUM', optionType: 'CE',
+        reasonFn: (_, r) => `Approaching resistance ${r} (15 pts away). Watch for breakout or rejection.` },
+      { type: 'BUY', strategy: 'OI_BUILDUP_BULL', confidence: 'HIGH', optionType: 'CE',
+        reasonFn: () => `Put OI buildup 2.3x vs call OI. Strong support formed. Bulls in control.` },
+      { type: 'INFO', strategy: 'IV_SKEW', confidence: 'LOW', optionType: 'PE',
+        reasonFn: () => `IV Skew Alert: CE IV=16.2% vs PE IV=12.8%. Call IV elevated - mean reversion opportunity.` },
+    ];
+
+    // Pick 2-3 random signals per refresh
+    const count = 2 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < count; i++) {
+      const s = strategies[Math.floor(Math.random() * strategies.length)];
+      const sym = Math.random() > 0.4 ? 'NIFTY' : 'BANKNIFTY';
+      const atm = sym === 'NIFTY' ? atmNifty : atmBankNifty;
+      const spot = sym === 'NIFTY' ? niftySpot : bankNiftySpot;
+      const lot = sym === 'NIFTY' ? 25 : 15;
+      const premium = 80 + Math.floor(Math.random() * 200);
+      const sl = Math.round(premium * 0.7);
+      const tgt = Math.round(premium * 1.5);
+
+      demoSignals.push({
+        id: `${sym}-${s.strategy}-${Date.now()}-${i}`,
+        type: s.type,
+        instrument: `${sym} ${atm} ${s.optionType}`,
+        symbol: sym,
+        strike: atm,
+        optionType: s.optionType,
+        entry: s.type === 'BUY' ? premium : 0,
+        stopLoss: s.type === 'BUY' ? sl : 0,
+        target: s.type === 'BUY' ? tgt : 0,
+        lotSize: lot,
+        riskReward: s.type === 'BUY' ? '1.5' : 'N/A',
+        reason: s.reasonFn(sym === 'NIFTY' ? niftyPCR : bankNiftyPCR, atm + 100),
+        confidence: s.confidence,
+        strategy: s.strategy,
+        timestamp: new Date(now.getTime() - Math.floor(Math.random() * 300000)).toISOString(),
+      });
+    }
+
     return {
       analysis: {
         nifty: buildAnalysis('NIFTY', niftySpot, atmNifty, niftyStrikes, niftyPCR, 25),
         bankNifty: buildAnalysis('BANKNIFTY', bankNiftySpot, atmBankNifty, bankNiftyStrikes, bankNiftyPCR, 15),
       },
-      signals: this.signals.slice(-20),
+      signals: demoSignals,
       positions: this.activePositions,
       pnl: this.getState().pnl,
       timestamp: new Date().toISOString(),
