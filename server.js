@@ -296,6 +296,30 @@ app.put('/api/trading-bot/config', (req, res) => {
   res.json({ success: true, config: tradingBot.config });
 });
 
+// Set Dhan API credentials
+app.post('/api/trading-bot/dhan-connect', async (req, res) => {
+  const { accessToken, clientId } = req.body;
+  if (!accessToken || !clientId) {
+    return res.status(400).json({ error: 'accessToken and clientId are required' });
+  }
+  tradingBot.setDhanCredentials(accessToken, clientId);
+  const status = await tradingBot.dhan.isConnected();
+  if (status.connected) {
+    tradingBot.useDhan = true;
+    res.json({ success: true, message: 'Connected to Dhan API - Live data enabled!' });
+  } else {
+    res.json({ success: false, message: 'Could not connect: ' + status.reason });
+  }
+});
+
+// Check Dhan connection status
+app.get('/api/trading-bot/dhan-status', (req, res) => {
+  res.json({
+    connected: tradingBot.useDhan,
+    hasCredentials: !!(tradingBot.dhan.accessToken && tradingBot.dhan.clientId),
+  });
+});
+
 // Get trade history
 app.get('/api/trading-bot/trades', (req, res) => {
   res.json({

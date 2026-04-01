@@ -6,10 +6,13 @@
 
 const MarketDataFetcher = require('./market-data');
 const TechnicalIndicators = require('./indicators');
+const DhanAPI = require('./dhan-api');
 
 class ScalpingBotEngine {
   constructor() {
     this.marketData = new MarketDataFetcher();
+    this.dhan = new DhanAPI();
+    this.useDhan = false; // Will be set to true if Dhan is connected
     this.priceHistory = { NIFTY: [], BANKNIFTY: [] };
     this.signals = [];
     this.activePositions = [];
@@ -41,11 +44,32 @@ class ScalpingBotEngine {
    */
   async initialize() {
     console.log('[Bot] Initializing scalping engine...');
+
+    // Try Dhan API first
+    if (this.dhan.accessToken && this.dhan.clientId) {
+      const status = await this.dhan.isConnected();
+      if (status.connected) {
+        this.useDhan = true;
+        console.log('[Bot] Connected to Dhan API - LIVE DATA mode');
+        return true;
+      }
+      console.log('[Bot] Dhan API connection failed:', status.reason);
+    }
+
+    // Fallback to NSE scraper
     const sessionOk = await this.marketData.initSession();
     if (!sessionOk) {
       console.log('[Bot] Warning: Could not establish NSE session. Will use demo mode.');
     }
     return true;
+  }
+
+  /**
+   * Configure Dhan API credentials
+   */
+  setDhanCredentials(accessToken, clientId) {
+    this.dhan = new DhanAPI(accessToken, clientId);
+    console.log('[Bot] Dhan credentials updated');
   }
 
   /**
@@ -77,27 +101,52 @@ class ScalpingBotEngine {
    */
   async tick() {
     try {
-      const [niftyChain, bankNiftyChain, indices] = await Promise.all([
-        this.marketData.getNiftyOptionsChain(),
-        this.marketData.getBankNiftyOptionsChain(),
-        this.marketData.getMarketIndices(),
-      ]);
-
       const analysis = {};
 
-      if (niftyChain) {
-        const parsed = this.marketData.parseOptionsChain(niftyChain);
-        if (parsed) {
-          const sr = this.marketData.findSupportResistance(parsed);
-          analysis.nifty = this.analyzeForScalping('NIFTY', parsed, sr);
-        }
-      }
+      if (this.useDhan) {
+        // Use Dhan API for live data
+        const [niftyRaw, bankNiftyRaw] = await Promise.all([
+          this.dhan.getOptionChain('NIFTY'),
+          this.dhan.getOptionChain('BANKNIFTY'),
+        ]);
 
-      if (bankNiftyChain) {
-        const parsed = this.marketData.parseOptionsChain(bankNiftyChain);
-        if (parsed) {
-          const sr = this.marketData.findSupportResistance(parsed);
-          analysis.bankNifty = this.analyzeForScalping('BANKNIFTY', parsed, sr);
+        if (niftyRaw) {
+          const parsed = this.dhan.parseOptionChain(niftyRaw, 'NIFTY');
+          if (parsed) {
+            const sr = this.marketData.findSupportResistance(parsed);
+            analysis.nifty = this.analyzeForScalping('NIFTY', parsed, sr);
+          }
+        }
+
+        if (bankNiftyRaw) {
+          const parsed = this.dhan.parseOptionChain(bankNiftyRaw, 'BANKNIFTY');
+          if (parsed) {
+            const sr = this.marketData.findSupportResistance(parsed);
+            analysis.bankNifty = this.analyzeForScalping('BANKNIFTY', parsed, sr);
+          }
+        }
+      } else {
+        // Fallback to NSE scraper
+        const [niftyChain, bankNiftyChain, indices] = await Promise.all([
+          this.marketData.getNiftyOptionsChain(),
+          this.marketData.getBankNiftyOptionsChain(),
+          this.marketData.getMarketIndices(),
+        ]);
+
+        if (niftyChain) {
+          const parsed = this.marketData.parseOptionsChain(niftyChain);
+          if (parsed) {
+            const sr = this.marketData.findSupportResistance(parsed);
+            analysis.nifty = this.analyzeForScalping('NIFTY', parsed, sr);
+          }
+        }
+
+        if (bankNiftyChain) {
+          const parsed = this.marketData.parseOptionsChain(bankNiftyChain);
+          if (parsed) {
+            const sr = this.marketData.findSupportResistance(parsed);
+            analysis.bankNifty = this.analyzeForScalping('BANKNIFTY', parsed, sr);
+          }
         }
       }
 
